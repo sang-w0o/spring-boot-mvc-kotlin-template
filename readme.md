@@ -15,10 +15,10 @@
   - 응답 예시
     ```json
     {
-      "timestamp": "2021-5-22 16:22",
+      "timestamp": "2021-5-22 16:36",
       "status": 400,
       "error": "Bad Request",
-      "message": "크기가 5에서 72 사이여야 합니다",
+      "message": "Name field is required.",
       "path": "/v1/user",
       "remote": "0:0:0:0:0:0:0:1"
     }
