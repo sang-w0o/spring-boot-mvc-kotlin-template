@@ -1,5 +1,6 @@
 package com.template.config
 
+import com.template.auth.exception.AuthenticateException
 import com.template.common.dto.ErrorResponseDto
 import com.template.common.exception.ApiException
 import com.template.common.tools.DateConverter
@@ -16,13 +17,19 @@ import java.lang.Exception
 import java.time.LocalDateTime
 
 @RestControllerAdvice
-class ApiExceptionHandler : ResponseEntityExceptionHandler() {
+class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = [Exception::class])
     protected fun handleApiException(exception: Exception, request: WebRequest): ResponseEntity<Any> {
-        return if(exception is ApiException) {
-            handleExceptionInternal(exception, null, HttpHeaders(), exception.httpStatus, request)
-        } else handleExceptionInternal(exception, null, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
+        return when (exception) {
+            is ApiException -> {
+                handleExceptionInternal(exception, null, HttpHeaders(), exception.httpStatus, request)
+            }
+            is AuthenticateException -> {
+                handleExceptionInternal(exception, null, HttpHeaders(), HttpStatus.UNAUTHORIZED, request)
+            }
+            else -> handleExceptionInternal(exception, null, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
+        }
     }
 
     override fun handleMethodArgumentNotValid(
