@@ -1,8 +1,10 @@
 package com.template.auth.tools
 
 import com.template.auth.exception.AuthenticateException
+import com.template.security.service.UserDetailsImpl
 import io.jsonwebtoken.*
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Component
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -78,5 +80,10 @@ class JwtTokenUtil {
         val claims: MutableMap<String, Any> = mutableMapOf()
         claims["userId"] = userId
         return createToken(claims, REFRESH_TOKEN_EXP)
+    }
+
+    fun getAuthentication(token: String): UsernamePasswordAuthenticationToken {
+        val userDetails = UserDetailsImpl(extractUserId(token))
+        return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 }
