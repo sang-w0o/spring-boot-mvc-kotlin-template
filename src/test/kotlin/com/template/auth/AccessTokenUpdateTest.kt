@@ -1,6 +1,8 @@
 package com.template.auth
 
 import com.template.ApiIntegrationTest
+import com.template.auth.dto.AccessTokenUpdateRequestDto
+import com.template.auth.dto.AccessTokenUpdateResponseDto
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.junit.Test

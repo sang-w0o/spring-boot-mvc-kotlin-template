@@ -19,7 +19,7 @@ import kotlin.test.assertEquals
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = ["classpath:application-test.yml"])
+@TestPropertySource(locations = ["classpath:application-test.properties"])
 abstract class ApiIntegrationTest {
 
     @Autowired
@@ -38,24 +38,27 @@ abstract class ApiIntegrationTest {
         const val EMAIL = "test@test.com"
         const val NAME  = "testUserName"
         const val PASSWORD = "testPassword"
-        const val BLOG_TITLE = "Blog Title"
-        const val BLOG_CONTENT = "Blog Content"
-        const val COMMENT_CONTENT = "Comment Content"
     }
 
     @Before
     fun setUp() {
-        val user = User(EMAIL, NAME, encoder.encode(PASSWORD))
-        userRepository.save(user)
+        val user = User(
+            email = EMAIL,
+            name = NAME,
+            password = encoder.encode(PASSWORD))
+        val a = userRepository.save(user)
+        println("SAVED USER ID: ${a.id}")
     }
 
     @After
     fun tearDown() {
+        println("DELETE ALL USERS")
         userRepository.deleteAll()
     }
 
     protected fun getUserId(): Int {
-        val user: User = userRepository.findByEmail(EMAIL).orElseThrow{ UserIdNotFoundException() }
+        println("EMAIL: $EMAIL")
+        val user = userRepository.findByEmail(EMAIL).orElseThrow{ UserIdNotFoundException() }
         val userId = user.id
         if(userId != null) return userId
         else return -1
