@@ -1,6 +1,6 @@
 package com.template.common.function
 
-import com.template.auth.exception.UserUnauthorizedException
+import com.template.auth.exception.UserUnAuthorizedException
 import com.template.domain.user.User
 import com.template.domain.user.UserRepository
 import com.template.security.service.UserDetailsImpl
@@ -17,7 +17,7 @@ class FindUser : Supplier<User> {
 
     override fun get(): User {
         val userId = Integer.parseInt((SecurityContextHolder.getContext().authentication.principal as UserDetailsImpl).username)
-        return userRepository.findById(userId).orElseThrow { UserUnauthorizedException() }
+        return userRepository.findById(userId).orElseThrow { UserUnAuthorizedException() }
 
     }
 }
