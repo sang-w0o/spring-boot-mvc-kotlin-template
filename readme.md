@@ -27,17 +27,18 @@
 - JPA가 연결할 데이터베이스 종류가 MySQL, MariaDB로 설정되어 있습니다.
 - 데이터베이스와 JWT SecretKey와 관련된 변수들은 아래와 같이 설정되어 있습니다.
 
-  ```yml
-  spring:
-  # 다른 설정들
-  datasource:
-    url: ${DATASOURCE_URL}
-    username: ${DATASOURCE_USRNAME}
-    password: ${DATASOURCE_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  ```properties
+  spring.jpa.show-sql=false
+  spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
+  spring.jpa.open-in-view=false
+  spring.jpa.hibernate.ddl-auto=none
+  spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+  spring.datasource.url=${DATASOURCE_URL}
+  spring.datasource.username=${DATASOURCE_USERNAME}
+  spring.datasource.password=${DATASOURCE_PASSWORD}
+  spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
-  jwt:
-    sercet: ${JWT_SECRET}
+  jwt.secret=${JWT_SECRET}
   ```
 
   - 위 설정값에 값을 대입하여 사용하는 방법은 Intellij 기준으로 아래와 같습니다.
@@ -46,3 +47,23 @@
     2. `Run/Debug Application` 창에서 `Environment` => `Environment Variables`의 오른쪽 아이콘 클릭
     3. 위 yml 파일에 지정해준 이름을 Key값으로 value 각각 설정  
        ![picture 1](images/cd496c4f9644c1e4f2872c1c6305eff2a4b3c0b8bfc7b2d2b97a683aca57178e.png)
+
+- 기본적으로 AccessToken은 1일, RefreshToken은 7일의 수명을 가집니다.   
+  AccessToken을 갱신하는 API는 아래와 같습니다.
+  
+- [POST] `/v1/auth/update-token`
+  - Authorization Header: 불필요
+  - Request Body
+    ```json
+    {
+      "refreshToken": "string"
+    }
+    ```
+  - Response Body(정상 처리 시)
+    ```json
+    {
+      "accessToken": "string"
+    }
+    ```
+  - 예외상황(ex. refreshToken 수명 만료)들에 대해서는 위에서 정의한   
+    `ErrorResponseDto`의 형식으로 응답이 옵니다.
