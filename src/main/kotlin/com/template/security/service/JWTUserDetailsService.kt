@@ -15,8 +15,6 @@ class JWTUserDetailsService(private val authorizeUser: AuthorizeUser) : UserDeta
     }
 
     fun getAuthorities() : Set<GrantedAuthority> {
-        val authorities = mutableSetOf<GrantedAuthority>()
-        authorities.add(SimpleGrantedAuthority("ROLE_USER"))
-        return authorities
+        return mutableSetOf()
     }
 }

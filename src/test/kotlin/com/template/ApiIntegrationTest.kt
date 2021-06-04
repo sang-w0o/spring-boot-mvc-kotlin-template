@@ -47,17 +47,14 @@ abstract class ApiIntegrationTest {
             name = NAME,
             password = encoder.encode(PASSWORD))
         val a = userRepository.save(user)
-        println("SAVED USER ID: ${a.id}")
     }
 
     @After
     fun tearDown() {
-        println("DELETE ALL USERS")
         userRepository.deleteAll()
     }
 
     protected fun getUserId(): Int {
-        println("EMAIL: $EMAIL")
         val user = userRepository.findByEmail(EMAIL).orElseThrow{ UserIdNotFoundException() }
         val userId = user.id
         if(userId != null) return userId

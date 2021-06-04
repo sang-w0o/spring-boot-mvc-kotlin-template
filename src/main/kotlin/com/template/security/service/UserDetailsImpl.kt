@@ -1,7 +1,6 @@
 package com.template.security.service
 
 import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class UserDetailsImpl(
@@ -33,8 +32,6 @@ class UserDetailsImpl(
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        val authorities = mutableSetOf<SimpleGrantedAuthority>()
-        authorities.add(SimpleGrantedAuthority("ROLE_USER"))
-        return authorities
+        return mutableSetOf()
     }
 }
