@@ -2,6 +2,8 @@ package com.template.auth.controller
 
 import com.template.auth.dto.AccessTokenUpdateRequestDto
 import com.template.auth.dto.AccessTokenUpdateResponseDto
+import com.template.auth.dto.LoginRequestDto
+import com.template.auth.dto.LoginResponseDto
 import com.template.auth.service.AuthService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -16,5 +18,10 @@ class AuthApiController(
     @PostMapping("/v1/auth/update-token")
     fun updateAccessToken(@Valid @RequestBody requestDto: AccessTokenUpdateRequestDto): AccessTokenUpdateResponseDto {
         return authService.updateAccessToken(requestDto)
+    }
+
+    @PostMapping("/v1/auth/login")
+    fun login(@Valid @RequestBody requestDto: LoginRequestDto): LoginResponseDto {
+        return authService.login(requestDto)
     }
 }
