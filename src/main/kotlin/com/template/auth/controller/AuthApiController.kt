@@ -10,7 +10,7 @@ import javax.validation.Valid
 
 @RestController
 class AuthApiController(
-    private val authService: AuthService
+    private val authService: AuthService,
 ) {
 
     @PostMapping("/v1/auth/update-token")
