@@ -7,6 +7,7 @@ import org.junit.Test
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
+import java.lang.IllegalArgumentException
 import java.net.URI
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -22,6 +23,11 @@ class LoginTest : ApiIntegrationTest() {
         return RequestEntity.post(URI.create("/v1/auth/login"))
             .contentType(MediaType.APPLICATION_JSON)
             .body(requestDto)
+    }
+
+    @Test
+    fun thisTestShouldFail() {
+        throw IllegalArgumentException("FAIL!!")
     }
 
     private fun getLoginRequestDto(email: String, password: String): LoginRequestDto {
