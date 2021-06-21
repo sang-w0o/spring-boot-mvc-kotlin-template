@@ -3,7 +3,7 @@ name: PullRequestGradleTest
 on:
   pull_request_target:
     branches:
-      - dev
+      - master
 
 jobs:
   test:
