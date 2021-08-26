@@ -13,14 +13,20 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.http.RequestEntity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.test.context.TestPropertySource
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = ["classpath:application-test.properties"])
+@ActiveProfiles("test")
 abstract class ApiIntegrationTest {
+
+    companion object {
+        const val EMAIL = "test@test.com"
+        const val NAME  = "testUserName"
+        const val PASSWORD = "testPassword"
+    }
 
     @Autowired
     protected lateinit var userRepository: UserRepository
@@ -33,12 +39,6 @@ abstract class ApiIntegrationTest {
 
     @Autowired
     protected lateinit var encoder: BCryptPasswordEncoder
-
-    companion object {
-        const val EMAIL = "test@test.com"
-        const val NAME  = "testUserName"
-        const val PASSWORD = "testPassword"
-    }
 
     @Before
     fun setUp() {
