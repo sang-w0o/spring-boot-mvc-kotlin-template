@@ -32,7 +32,6 @@ class JWTAuthenticationEntryPoint : AuthenticationEntryPoint {
 
     private fun convertObjectToJson(obj: Any): String? {
         val mapper = ObjectMapper().registerModule(KotlinModule()).registerModule(JavaTimeModule())
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         return mapper.writeValueAsString(obj)
     }
 }
