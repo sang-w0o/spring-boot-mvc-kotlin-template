@@ -30,6 +30,7 @@ dependencies {
     implementation("org.hibernate:hibernate-core:5.4.2.Final")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     testImplementation(kotlin("test-junit"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("junit:junit:4.13.1")
