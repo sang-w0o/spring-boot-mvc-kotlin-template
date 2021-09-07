@@ -2,7 +2,6 @@ package com.template.security.handler
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.template.common.dto.ErrorResponseDto
-import com.template.common.tools.DateConverter
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.AuthenticationException
@@ -21,7 +20,7 @@ class JWTAuthenticationEntryPoint : AuthenticationEntryPoint {
     ) {
         request!!
         val errorResponseDto = ErrorResponseDto(
-            DateConverter.convertDateWithTime(LocalDateTime.now()), HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.reasonPhrase, exception?.message!!, request.requestURI, request.remoteAddr)
+            LocalDateTime.now(), HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.reasonPhrase, exception?.message!!, request.requestURI, request.remoteAddr)
         response?.status = HttpStatus.UNAUTHORIZED.value()
         response?.contentType = MediaType.APPLICATION_JSON_VALUE
         response?.characterEncoding = "UTF-8"
