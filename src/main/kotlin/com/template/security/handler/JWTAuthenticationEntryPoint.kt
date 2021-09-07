@@ -1,6 +1,9 @@
 package com.template.security.handler
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.template.common.dto.ErrorResponseDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -28,10 +31,8 @@ class JWTAuthenticationEntryPoint : AuthenticationEntryPoint {
     }
 
     private fun convertObjectToJson(obj: Any): String? {
-        if (obj == null) {
-            return null;
-        }
-        val mapper = ObjectMapper()
-        return mapper.writeValueAsString(obj);
+        val mapper = ObjectMapper().registerModule(KotlinModule()).registerModule(JavaTimeModule())
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        return mapper.writeValueAsString(obj)
     }
 }
