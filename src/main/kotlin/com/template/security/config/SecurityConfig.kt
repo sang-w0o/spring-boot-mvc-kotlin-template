@@ -44,10 +44,12 @@ class SecurityConfig(private val jwtTokenUtil: JwtTokenUtil, private val authent
 
     override fun configure(web: WebSecurity?) {
         // TODO: JWT 인증 절차를 제외할 End point 추가 및 수정
-        web?.ignoring()
-            ?.mvcMatchers(HttpMethod.POST, "/v1/auth/update-token")
-            ?.mvcMatchers(HttpMethod.POST, "/v1/auth/login")
-            ?.mvcMatchers(HttpMethod.GET, "/swagger-ui/**")
+        web!!
+        web.ignoring()
+            .mvcMatchers(HttpMethod.POST, "/v1/auth/update-token")
+            .mvcMatchers(HttpMethod.POST, "/v1/auth/login")
+            .mvcMatchers(HttpMethod.GET, "/swagger-ui/**")
+            .mvcMatchers(HttpMethod.GET, "/actuator/**")
     }
 
     @Bean
