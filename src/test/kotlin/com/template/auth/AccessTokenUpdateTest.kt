@@ -50,12 +50,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
         }
         test.andExpect {
             status { isUnauthorized() }
-            jsonPath("timestamp") { exists() }
-            jsonPath("status") { exists() }
-            jsonPath("error") { exists() }
-            jsonPath("message") { exists() }
-            jsonPath("path") { exists() }
-            jsonPath("remote") { exists() }
+            assertErrorResponse(this)
         }
     }
 
@@ -68,12 +63,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
         }
         test.andExpect {
             status { isUnauthorized() }
-            jsonPath("timestamp") { exists() }
-            jsonPath("status") { exists() }
-            jsonPath("error") { exists() }
-            jsonPath("message") { exists() }
-            jsonPath("path") { exists() }
-            jsonPath("remote") { exists() }
+            assertErrorResponse(this)
         }
     }
 
@@ -87,12 +77,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
         }
         test.andExpect {
             status { isUnauthorized() }
-            jsonPath("timestamp") { exists() }
-            jsonPath("status") { exists() }
-            jsonPath("error") { exists() }
-            jsonPath("message") { exists() }
-            jsonPath("path") { exists() }
-            jsonPath("remote") { exists() }
+            assertErrorResponse(this)
         }
     }
 

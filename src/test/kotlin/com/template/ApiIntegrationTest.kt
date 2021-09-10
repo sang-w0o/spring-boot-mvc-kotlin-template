@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -57,5 +58,14 @@ abstract class ApiIntegrationTest {
     protected fun getUserId(): Int {
         val user = userRepository.findByEmail(EMAIL).orElseThrow{ UserIdNotFoundException() }
         return user.id ?: -1
+    }
+
+    protected fun assertErrorResponse(dsl: MockMvcResultMatchersDsl) {
+        dsl.jsonPath("timestamp") { exists() }
+        dsl.jsonPath("status") { exists() }
+        dsl.jsonPath("error") { exists() }
+        dsl.jsonPath("message") { exists() }
+        dsl.jsonPath("path") { exists() }
+        dsl.jsonPath("remote") { exists() }
     }
 }

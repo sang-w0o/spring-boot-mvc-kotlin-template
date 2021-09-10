@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.ResultActionsDsl
 import org.springframework.test.web.servlet.post
 import java.net.URI
 
@@ -24,6 +25,13 @@ class LoginTest : ApiIntegrationTest() {
         return requestDto
     }
 
+    private fun apiCall(requestDto: LoginRequestDto): ResultActionsDsl {
+        return mockMvc.post(URI.create("/v1/auth/login")) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(requestDto)
+        }
+    }
+
     @Test
     @DisplayName("로그인 성공")
     fun login_responseIsOkIfAllConditionsAreRight() {
@@ -35,7 +43,7 @@ class LoginTest : ApiIntegrationTest() {
             content = objectMapper.writeValueAsString(requestDto)
         }
 
-        val result = test.andExpect {
+        val result = apiCall(requestDto).andExpect {
             status { isOk() }
             jsonPath("accessToken") { exists() }
             jsonPath("refreshToken") { exists() }
@@ -59,12 +67,7 @@ class LoginTest : ApiIntegrationTest() {
 
         test.andExpect {
             status { isNotFound() }
-            jsonPath("timestamp") { exists() }
-            jsonPath("status") { exists() }
-            jsonPath("error") { exists() }
-            jsonPath("message") { exists() }
-            jsonPath("path") { exists() }
-            jsonPath("remote") { exists() }
+            assertErrorResponse(this)
         }
     }
 
@@ -79,12 +82,7 @@ class LoginTest : ApiIntegrationTest() {
 
         test.andExpect {
             status { isNotFound() }
-            jsonPath("timestamp") { exists() }
-            jsonPath("status") { exists() }
-            jsonPath("error") { exists() }
-            jsonPath("message") { exists() }
-            jsonPath("path") { exists() }
-            jsonPath("remote") { exists() }
+            assertErrorResponse(this)
         }
     }
 }
