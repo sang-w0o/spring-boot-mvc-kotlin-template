@@ -1,19 +1,17 @@
 package com.template.auth
 
+import com.jayway.jsonpath.JsonPath
 import com.template.ApiIntegrationTest
 import com.template.auth.dto.AccessTokenUpdateRequestDto
-import com.template.auth.dto.AccessTokenUpdateResponseDto
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.http.RequestEntity
+import org.springframework.test.web.servlet.post
 import java.net.URI
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 
 class AccessTokenUpdateTest : ApiIntegrationTest() {
 
@@ -24,50 +22,78 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
     @Value("\${jwt.secret}")
     lateinit var secretKey: String
 
-
-    private fun getTokenUpdateRequestEntity(requestDto: AccessTokenUpdateRequestDto): RequestEntity<AccessTokenUpdateRequestDto> {
-        return RequestEntity.post(URI.create("/v1/auth/update-token"))
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(requestDto)
-    }
-
     @Test
     fun updateToken_responseIsOkIfAllConditionsAreRight() {
         val userId = getUserId()
         val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(userId))
-        val requestEntity = getTokenUpdateRequestEntity(requestDto)
 
-        val responseEntity = restTemplate.exchange(requestEntity, AccessTokenUpdateResponseDto::class.java)
-        val responseBody = responseEntity.body
+        val test = mockMvc.post(URI.create("/v1/auth/update-token")) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(requestDto)
+        }
 
-        assertEquals(HttpStatus.OK, responseEntity.statusCode)
+        val result = test.andExpect {
+            status { isOk() }
+            jsonPath("accessToken") { exists() }
+        }.andReturn()
 
-        assertFalse(jwtTokenUtil.isTokenExpired(responseBody.accessToken))
+        val accessToken = JsonPath.read<String>(result.response.contentAsString, "$.accessToken")
+        assertFalse(jwtTokenUtil.isTokenExpired(accessToken))
     }
 
     @Test
     fun updateToken_responseIsUnAuthorizedIfRefreshTokenIsMalformed() {
         val requestDto = AccessTokenUpdateRequestDto(WRONG_TOKEN)
-        val requestEntity = getTokenUpdateRequestEntity(requestDto)
-
-        assertResponseStatus(HttpStatus.UNAUTHORIZED, requestEntity)
+        val test = mockMvc.post(URI.create("/v1/auth/update-token")) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(requestDto)
+        }
+        test.andExpect {
+            status { isUnauthorized() }
+            jsonPath("timestamp") { exists() }
+            jsonPath("status") { exists() }
+            jsonPath("error") { exists() }
+            jsonPath("message") { exists() }
+            jsonPath("path") { exists() }
+            jsonPath("remote") { exists() }
+        }
     }
 
     @Test
     fun updateToken_responseIsUnAuthorizedIfUserIdIsInvalid() {
         val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(-1))
-        val requestEntity = getTokenUpdateRequestEntity(requestDto)
-
-        assertResponseStatus(HttpStatus.UNAUTHORIZED, requestEntity)
+        val test = mockMvc.post(URI.create("/v1/auth/update-token")) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(requestDto)
+        }
+        test.andExpect {
+            status { isUnauthorized() }
+            jsonPath("timestamp") { exists() }
+            jsonPath("status") { exists() }
+            jsonPath("error") { exists() }
+            jsonPath("message") { exists() }
+            jsonPath("path") { exists() }
+            jsonPath("remote") { exists() }
+        }
     }
 
     @Test
     fun updateToken_responseIsUnAuthorizedIfAccessTokenIsExpired() {
         val userId = getUserId()
         val requestDto = AccessTokenUpdateRequestDto(generateExpiredRefreshToken(userId))
-        val requestEntity = getTokenUpdateRequestEntity(requestDto)
-
-        assertResponseStatus(HttpStatus.UNAUTHORIZED, requestEntity)
+        val test = mockMvc.post(URI.create("/v1/auth/update-token")) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(requestDto)
+        }
+        test.andExpect {
+            status { isUnauthorized() }
+            jsonPath("timestamp") { exists() }
+            jsonPath("status") { exists() }
+            jsonPath("error") { exists() }
+            jsonPath("message") { exists() }
+            jsonPath("path") { exists() }
+            jsonPath("remote") { exists() }
+        }
     }
 
     private fun generateExpiredRefreshToken(userId: Int): String {
