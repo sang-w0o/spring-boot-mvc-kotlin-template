@@ -31,17 +31,16 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    testImplementation(kotlin("test-junit"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("junit:junit:4.13.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testImplementation("com.h2database:h2")
     testImplementation("org.apache.httpcomponents:httpclient:4.5.11")
 }
 
 tasks.test {
-    useJUnit()
+    useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile>() {
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
