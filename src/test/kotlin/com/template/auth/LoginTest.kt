@@ -38,11 +38,6 @@ class LoginTest : ApiIntegrationTest() {
         val userId = getUserId()
         val requestDto = getLoginRequestDto(EMAIL, PASSWORD)
 
-        val test = mockMvc.post(URI.create("/v1/auth/login")) {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(requestDto)
-        }
-
         val result = apiCall(requestDto).andExpect {
             status { isOk() }
             jsonPath("accessToken") { exists() }
@@ -60,12 +55,8 @@ class LoginTest : ApiIntegrationTest() {
     @DisplayName("로그인 실패 - 없는 이메일")
     fun login_responseIsNotFoundIfEmailIsWrong() {
         val requestDto = getLoginRequestDto(WRONG_EMAIL, PASSWORD)
-        val test = mockMvc.post(URI.create("/v1/auth/login")) {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(requestDto)
-        }
 
-        test.andExpect {
+        apiCall(requestDto).andExpect {
             status { isNotFound() }
             assertErrorResponse(this)
         }
@@ -75,12 +66,7 @@ class LoginTest : ApiIntegrationTest() {
     @DisplayName("로그인 실패 - 비밀번호 오류")
     fun login_responseIsNotFoundIfPasswordIsWrong() {
         val requestDto = getLoginRequestDto(EMAIL, WRONG_PASSWORD)
-        val test = mockMvc.post(URI.create("/v1/auth/login")) {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(requestDto)
-        }
-
-        test.andExpect {
+        apiCall(requestDto).andExpect {
             status { isNotFound() }
             assertErrorResponse(this)
         }

@@ -1,24 +1,23 @@
 package com.template
 
-import com.jayway.jsonpath.JsonPath
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
 import java.net.URI
 
 class ActuatorTest : ApiIntegrationTest() {
 
+    @DisplayName("Actuator - Health Check")
     @Test
     fun healthCheckApiIsOpen() {
         val test = mockMvc.get(URI.create("/actuator/health"))
-        val result = test.andExpect {
+        test.andExpect {
             status { isOk() }
-            jsonPath("status") { exists() }
-        }.andReturn()
-        val statusResult = JsonPath.read<String>(result.response.contentAsString, "$.status")
-        assertEquals("UP", statusResult)
+            jsonPath("status") { value("UP")}
+        }
    }
 
+    @DisplayName("Actuator - Information")
     @Test
     fun infoApiIsOpen() {
         val test = mockMvc.get(URI.create("/actuator/info"))

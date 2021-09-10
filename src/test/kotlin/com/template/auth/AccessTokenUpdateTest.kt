@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.ResultActionsDsl
 import org.springframework.test.web.servlet.post
 import java.net.URI
 import java.util.*
@@ -22,17 +23,19 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
     @Value("\${jwt.secret}")
     lateinit var secretKey: String
 
+    private fun apiCall(requestDto: AccessTokenUpdateRequestDto): ResultActionsDsl {
+        return mockMvc.post(URI.create("/v1/auth/update-token")) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(requestDto)
+        }
+    }
+
     @Test
     fun updateToken_responseIsOkIfAllConditionsAreRight() {
         val userId = getUserId()
         val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(userId))
 
-        val test = mockMvc.post(URI.create("/v1/auth/update-token")) {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(requestDto)
-        }
-
-        val result = test.andExpect {
+        val result = apiCall(requestDto).andExpect {
             status { isOk() }
             jsonPath("accessToken") { exists() }
         }.andReturn()
@@ -44,11 +47,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
     @Test
     fun updateToken_responseIsUnAuthorizedIfRefreshTokenIsMalformed() {
         val requestDto = AccessTokenUpdateRequestDto(WRONG_TOKEN)
-        val test = mockMvc.post(URI.create("/v1/auth/update-token")) {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(requestDto)
-        }
-        test.andExpect {
+        apiCall(requestDto).andExpect {
             status { isUnauthorized() }
             assertErrorResponse(this)
         }
@@ -57,11 +56,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
     @Test
     fun updateToken_responseIsUnAuthorizedIfUserIdIsInvalid() {
         val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(-1))
-        val test = mockMvc.post(URI.create("/v1/auth/update-token")) {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(requestDto)
-        }
-        test.andExpect {
+        apiCall(requestDto).andExpect {
             status { isUnauthorized() }
             assertErrorResponse(this)
         }
@@ -71,11 +66,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
     fun updateToken_responseIsUnAuthorizedIfAccessTokenIsExpired() {
         val userId = getUserId()
         val requestDto = AccessTokenUpdateRequestDto(generateExpiredRefreshToken(userId))
-        val test = mockMvc.post(URI.create("/v1/auth/update-token")) {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(requestDto)
-        }
-        test.andExpect {
+        apiCall(requestDto).andExpect {
             status { isUnauthorized() }
             assertErrorResponse(this)
         }
