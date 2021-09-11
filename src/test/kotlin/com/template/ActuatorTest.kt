@@ -1,35 +1,32 @@
 package com.template
 
-import org.junit.Test
-import org.springframework.http.HttpStatus
-import org.springframework.http.RequestEntity
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.springframework.test.web.servlet.get
 import java.net.URI
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class ActuatorTest : ApiIntegrationTest() {
 
+    @DisplayName("Actuator - Health Check")
     @Test
     fun healthCheckApiIsOpen() {
-        val requestEntity = RequestEntity.get(URI.create("/actuator/health"))
-            .build()
-        val responseEntity = restTemplate.exchange(requestEntity, String::class.java)
-        val response = responseEntity.body
-        assertEquals(HttpStatus.OK, responseEntity.statusCode)
-        assertTrue(response.contains("status"))
-        assertTrue(response.contains("UP"))
-    }
+        val test = mockMvc.get(URI.create("/actuator/health"))
+        test.andExpect {
+            status { isOk() }
+            jsonPath("status") { value("UP")}
+        }
+   }
 
+    @DisplayName("Actuator - Information")
     @Test
     fun infoApiIsOpen() {
-        val requestEntity = RequestEntity.get(URI.create("/actuator/info"))
-            .build()
-        val responseEntity = restTemplate.exchange(requestEntity, String::class.java)
-        val response = responseEntity.body
-        assertEquals(HttpStatus.OK, responseEntity.statusCode)
-        assertTrue(response.contains("author"))
-        assertTrue(response.contains("version"))
-        assertTrue(response.contains("description"))
-        assertTrue(response.contains("more_info"))
-    }
+        val test = mockMvc.get(URI.create("/actuator/info"))
+        test.andExpect {
+            status { isOk() }
+            jsonPath("application.author") { exists() }
+            jsonPath("application.version") { exists() }
+            jsonPath("application.description") { exists() }
+            jsonPath("application.more_info") { exists() }
+        }
+   }
 }

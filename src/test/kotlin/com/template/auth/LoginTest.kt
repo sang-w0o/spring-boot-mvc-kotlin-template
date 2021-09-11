@@ -1,27 +1,21 @@
 package com.template.auth
 
+import com.jayway.jsonpath.JsonPath
 import com.template.ApiIntegrationTest
 import com.template.auth.dto.LoginRequestDto
-import com.template.auth.dto.LoginResponseDto
-import org.junit.Test
-import org.springframework.http.HttpStatus
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
-import org.springframework.http.RequestEntity
+import org.springframework.test.web.servlet.ResultActionsDsl
+import org.springframework.test.web.servlet.post
 import java.net.URI
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 class LoginTest : ApiIntegrationTest() {
 
     companion object {
         const val WRONG_EMAIL = "wrong@wrong.com"
         const val WRONG_PASSWORD = "wrongPassword"
-    }
-
-    private fun getLoginRequestEntity(requestDto: LoginRequestDto): RequestEntity<LoginRequestDto> {
-        return RequestEntity.post(URI.create("/v1/auth/login"))
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(requestDto)
     }
 
     private fun getLoginRequestDto(email: String, password: String): LoginRequestDto {
@@ -31,38 +25,50 @@ class LoginTest : ApiIntegrationTest() {
         return requestDto
     }
 
+    private fun apiCall(requestDto: LoginRequestDto): ResultActionsDsl {
+        return mockMvc.post(URI.create("/v1/auth/login")) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(requestDto)
+        }
+    }
+
     @Test
+    @DisplayName("로그인 성공")
     fun login_responseIsOkIfAllConditionsAreRight() {
         val userId = getUserId()
         val requestDto = getLoginRequestDto(EMAIL, PASSWORD)
-        val requestEntity = getLoginRequestEntity(requestDto)
-        val responseEntity = restTemplate.exchange(requestEntity, LoginResponseDto::class.java)
 
-        assertEquals(HttpStatus.OK, responseEntity.statusCode)
-        val responseBody = responseEntity.body
-        assertNotNull(responseBody.accessToken)
-        assertNotNull(responseBody.refreshToken)
+        val result = apiCall(requestDto).andExpect {
+            status { isOk() }
+            jsonPath("accessToken") { exists() }
+            jsonPath("refreshToken") { exists() }
+        }.andReturn()
 
-        val accessToken = responseBody.accessToken
-        val refreshToken = responseBody.refreshToken
+        val accessToken = JsonPath.read<String>(result.response.contentAsString, "$.accessToken")
+        val refreshToken = JsonPath.read<String>(result.response.contentAsString, "$.refreshToken")
 
         assertEquals(userId, jwtTokenUtil.extractUserId(accessToken))
         assertEquals(userId, jwtTokenUtil.extractUserId(refreshToken))
     }
 
     @Test
+    @DisplayName("로그인 실패 - 없는 이메일")
     fun login_responseIsNotFoundIfEmailIsWrong() {
         val requestDto = getLoginRequestDto(WRONG_EMAIL, PASSWORD)
-        val requestEntity = getLoginRequestEntity(requestDto)
 
-        assertResponseStatus(HttpStatus.NOT_FOUND, requestEntity)
+        apiCall(requestDto).andExpect {
+            status { isNotFound() }
+            assertErrorResponse(this)
+        }
     }
 
     @Test
+    @DisplayName("로그인 실패 - 비밀번호 오류")
     fun login_responseIsNotFoundIfPasswordIsWrong() {
         val requestDto = getLoginRequestDto(EMAIL, WRONG_PASSWORD)
-        val requestEntity = getLoginRequestEntity(requestDto)
-
-        assertResponseStatus(HttpStatus.NOT_FOUND, requestEntity)
+        apiCall(requestDto).andExpect {
+            status { isNotFound() }
+            assertErrorResponse(this)
+        }
     }
 }
