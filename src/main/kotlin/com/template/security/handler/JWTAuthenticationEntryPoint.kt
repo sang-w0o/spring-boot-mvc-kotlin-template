@@ -22,7 +22,8 @@ class JWTAuthenticationEntryPoint : AuthenticationEntryPoint {
     ) {
         request!!
         val errorResponseDto = ErrorResponseDto(
-            LocalDateTime.now(), HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.reasonPhrase, exception?.message!!, request.requestURI, request.remoteAddr)
+            LocalDateTime.now(), HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.reasonPhrase, exception?.message!!, request.requestURI, request.remoteAddr
+        )
         response?.status = HttpStatus.UNAUTHORIZED.value()
         response?.contentType = MediaType.APPLICATION_JSON_VALUE
         response?.characterEncoding = "UTF-8"

@@ -13,7 +13,7 @@ class JWTUserDetailsService(private val authorizeUser: AuthorizeUser) : UserDeta
         return UserDetailsImpl(user.id!!)
     }
 
-    fun getAuthorities() : Set<GrantedAuthority> {
+    fun getAuthorities(): Set<GrantedAuthority> {
         return mutableSetOf()
     }
 }

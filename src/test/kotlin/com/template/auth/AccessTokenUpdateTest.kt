@@ -12,7 +12,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.ResultActionsDsl
 import org.springframework.test.web.servlet.post
 import java.net.URI
-import java.util.*
+import java.util.Date
 
 class AccessTokenUpdateTest : ApiIntegrationTest() {
 

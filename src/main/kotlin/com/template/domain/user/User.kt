@@ -1,11 +1,16 @@
 package com.template.domain.user
 
 import com.template.domain.common.CreatedAtEntity
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.Table
 
 @Entity
 @Table(name = "users")
-class User(name: String, email: String, password: String): CreatedAtEntity() {
+class User(name: String, email: String, password: String) : CreatedAtEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "user_id")
