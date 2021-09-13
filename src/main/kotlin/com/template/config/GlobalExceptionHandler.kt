@@ -38,7 +38,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         request: WebRequest
     ): ResponseEntity<Any> {
         val servletWebRequest = request as ServletWebRequest
-        val errorResponseDto = ErrorResponseDto(LocalDateTime.now(), status.value(), status.reasonPhrase, ex.bindingResult.fieldErrors[0].defaultMessage, servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
+        val errorResponseDto = ErrorResponseDto(LocalDateTime.now(), status.value(), status.reasonPhrase, ex.bindingResult.fieldErrors[0].defaultMessage!!, servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
         return ResponseEntity(errorResponseDto, headers, status)
     }
 
