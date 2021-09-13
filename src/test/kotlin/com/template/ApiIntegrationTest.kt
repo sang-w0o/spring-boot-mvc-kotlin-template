@@ -22,7 +22,7 @@ abstract class ApiIntegrationTest {
 
     companion object {
         const val EMAIL = "test@test.com"
-        const val NAME  = "testUserName"
+        const val NAME = "testUserName"
         const val PASSWORD = "testPassword"
     }
 
@@ -46,7 +46,8 @@ abstract class ApiIntegrationTest {
         val user = User(
             email = EMAIL,
             name = NAME,
-            password = encoder.encode(PASSWORD))
+            password = encoder.encode(PASSWORD)
+        )
         userRepository.save(user)
     }
 
@@ -56,7 +57,7 @@ abstract class ApiIntegrationTest {
     }
 
     protected fun getUserId(): Int {
-        val user = userRepository.findByEmail(EMAIL).orElseThrow{ UserIdNotFoundException() }
+        val user = userRepository.findByEmail(EMAIL).orElseThrow { UserIdNotFoundException() }
         return user.id ?: -1
     }
 

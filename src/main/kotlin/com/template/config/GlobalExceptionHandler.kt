@@ -38,7 +38,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         request: WebRequest
     ): ResponseEntity<Any> {
         val servletWebRequest = request as ServletWebRequest
-        val errorResponseDto = ErrorResponseDto(LocalDateTime.now(), status.value(), status.reasonPhrase, ex.bindingResult.fieldErrors[0].defaultMessage, servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
+        val errorResponseDto = ErrorResponseDto(LocalDateTime.now(), status.value(), status.reasonPhrase, ex.bindingResult.fieldErrors[0].defaultMessage!!, servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
         return ResponseEntity(errorResponseDto, headers, status)
     }
 
@@ -51,12 +51,11 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     ): ResponseEntity<Any> {
         val errorResponseDto: ErrorResponseDto
         val servletWebRequest = request as ServletWebRequest
-        errorResponseDto = if(status == HttpStatus.INTERNAL_SERVER_ERROR) {
+        errorResponseDto = if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
             ErrorResponseDto(LocalDateTime.now(), status.value(), status.reasonPhrase, "Internal Server Error", servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
         } else {
             ErrorResponseDto(LocalDateTime.now(), status.value(), status.reasonPhrase, ex.message!!, servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
         }
         return ResponseEntity(errorResponseDto, headers, status)
     }
-
 }

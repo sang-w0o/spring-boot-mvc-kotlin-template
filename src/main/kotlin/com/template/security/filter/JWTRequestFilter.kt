@@ -9,8 +9,9 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class JWTRequestFilter(private val jwtTokenUtil: JwtTokenUtil,
-                       private val authenticationEntryPoint: AuthenticationEntryPoint
+class JWTRequestFilter(
+    private val jwtTokenUtil: JwtTokenUtil,
+    private val authenticationEntryPoint: AuthenticationEntryPoint
 ) : OncePerRequestFilter() {
 
     companion object {
@@ -32,15 +33,15 @@ class JWTRequestFilter(private val jwtTokenUtil: JwtTokenUtil,
             val context = SecurityContextHolder.getContext()
             context.authentication = authentication
             filterChain.doFilter(request, response)
-        } catch(exception: AuthenticateException) {
+        } catch (exception: AuthenticateException) {
             authenticationEntryPoint.commence(request, response, exception)
         }
     }
 
     private fun validateAuthorizationHeader(splits: List<String>) {
-        if(splits.size != 2) throw AuthenticateException("Authorization Header is malformed.")
+        if (splits.size != 2) throw AuthenticateException("Authorization Header is malformed.")
         val scheme = splits[0]
-        if(scheme != BEARER_SCHEME) throw AuthenticateException("Scheme is not Bearer.")
+        if (scheme != BEARER_SCHEME) throw AuthenticateException("Scheme is not Bearer.")
     }
 
     private fun extractAccessToken(authorizationHeader: String): String {

@@ -13,9 +13,9 @@ class ActuatorTest : ApiIntegrationTest() {
         val test = mockMvc.get(URI.create("/actuator/health"))
         test.andExpect {
             status { isOk() }
-            jsonPath("status") { value("UP")}
+            jsonPath("status") { value("UP") }
         }
-   }
+    }
 
     @DisplayName("Actuator - Information")
     @Test
@@ -28,5 +28,5 @@ class ActuatorTest : ApiIntegrationTest() {
             jsonPath("application.description") { exists() }
             jsonPath("application.more_info") { exists() }
         }
-   }
+    }
 }

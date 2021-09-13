@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails
 
 class UserDetailsImpl(
     private val id: Int
-): UserDetails {
+) : UserDetails {
 
     override fun isEnabled(): Boolean {
         return true

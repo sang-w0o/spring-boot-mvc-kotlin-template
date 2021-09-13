@@ -18,7 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig(private val jwtTokenUtil: JwtTokenUtil, private val authenticationEntryPoint: AuthenticationEntryPoint): WebSecurityConfigurerAdapter() {
+class SecurityConfig(private val jwtTokenUtil: JwtTokenUtil, private val authenticationEntryPoint: AuthenticationEntryPoint) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity?) {
         // TODO: JWT 인증 절차를 추가할 End point 추가 및 수정

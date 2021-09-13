@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class AuthService(private val jwtTokenUtil: JwtTokenUtil,
-                  private val userRepository: UserRepository,
-                  private val encoder: BCryptPasswordEncoder) {
+class AuthService(
+    private val jwtTokenUtil: JwtTokenUtil,
+    private val userRepository: UserRepository,
+    private val encoder: BCryptPasswordEncoder
+) {
 
     @Transactional(readOnly = true)
     fun updateAccessToken(dto: AccessTokenUpdateRequestDto): AccessTokenUpdateResponseDto {
@@ -29,8 +31,8 @@ class AuthService(private val jwtTokenUtil: JwtTokenUtil,
 
     @Transactional(readOnly = true)
     fun login(requestDto: LoginRequestDto): LoginResponseDto {
-        val user = userRepository.findByEmail(requestDto.email).orElseThrow { LoginException()}
-        if(!encoder.matches(requestDto.password, user.password)) throw LoginException()
+        val user = userRepository.findByEmail(requestDto.email).orElseThrow { LoginException() }
+        if (!encoder.matches(requestDto.password, user.password)) throw LoginException()
         return LoginResponseDto(
             accessToken = jwtTokenUtil.generateAccessToken(user.id!!),
             refreshToken = jwtTokenUtil.generateAccessToken(user.id),

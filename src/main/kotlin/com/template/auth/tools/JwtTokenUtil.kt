@@ -2,12 +2,18 @@ package com.template.auth.tools
 
 import com.template.auth.exception.AuthenticateException
 import com.template.security.service.UserDetailsImpl
-import io.jsonwebtoken.*
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.MalformedJwtException
+import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.SignatureException
+import io.jsonwebtoken.UnsupportedJwtException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Component
 import java.lang.IllegalArgumentException
-import java.util.*
+import java.util.Date
 import java.util.function.Function
 
 @Component
@@ -24,7 +30,7 @@ class JwtTokenUtil {
     private fun getUserId(claim: Claims): Int {
         try {
             return claim.get("userId", Int::class.javaObjectType)
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             throw AuthenticateException("JWT Claim에 userId가 없습니다.")
         }
     }
@@ -33,18 +39,18 @@ class JwtTokenUtil {
         return extractClaim(token, Claims::getExpiration)
     }
 
-    private fun extractAllClaims(token: String) : Claims {
+    private fun extractAllClaims(token: String): Claims {
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).body
-        } catch(expiredJwtException: ExpiredJwtException) {
+        } catch (expiredJwtException: ExpiredJwtException) {
             throw AuthenticateException("Jwt 토큰이 만료되었습니다.")
-        } catch(unsupportedJwtException: UnsupportedJwtException) {
+        } catch (unsupportedJwtException: UnsupportedJwtException) {
             throw AuthenticateException("지원되지 않는 Jwt 토큰입니다.")
-        } catch(malformedJwtException: MalformedJwtException) {
+        } catch (malformedJwtException: MalformedJwtException) {
             throw AuthenticateException("잘못된 형식의 Jwt 토큰입니다.")
-        } catch(signatureException: SignatureException) {
+        } catch (signatureException: SignatureException) {
             throw AuthenticateException("Jwt Signature이 잘못된 값입니다.")
-        } catch(illegalArgumentException: IllegalArgumentException) {
+        } catch (illegalArgumentException: IllegalArgumentException) {
             throw AuthenticateException("Jwt 헤더 값이 잘못되었습니다.")
         }
     }
