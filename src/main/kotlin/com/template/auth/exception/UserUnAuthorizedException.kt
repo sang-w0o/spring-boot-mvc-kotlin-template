@@ -1,4 +1,4 @@
-package com.template.integration.auth.exception
+package com.template.auth.exception
 
 import com.template.common.exception.UnauthorizedException
 

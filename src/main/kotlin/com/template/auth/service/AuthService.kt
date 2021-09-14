@@ -1,12 +1,12 @@
-package com.template.integration.auth.service
+package com.template.auth.service
 
-import com.template.integration.auth.dto.AccessTokenUpdateRequestDto
-import com.template.integration.auth.dto.AccessTokenUpdateResponseDto
-import com.template.integration.auth.dto.LoginRequestDto
-import com.template.integration.auth.dto.LoginResponseDto
-import com.template.integration.auth.exception.AuthenticateException
-import com.template.integration.auth.exception.LoginException
-import com.template.integration.auth.tools.JwtTokenUtil
+import com.template.auth.dto.AccessTokenUpdateRequestDto
+import com.template.auth.dto.AccessTokenUpdateResponseDto
+import com.template.auth.dto.LoginRequestDto
+import com.template.auth.dto.LoginResponseDto
+import com.template.auth.exception.AuthenticateException
+import com.template.auth.exception.LoginException
+import com.template.auth.tools.JwtTokenUtil
 import com.template.domain.user.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service

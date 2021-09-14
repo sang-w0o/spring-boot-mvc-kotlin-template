@@ -1,10 +1,10 @@
-package com.template.integration.auth.controller
+package com.template.auth.controller
 
-import com.template.integration.auth.dto.AccessTokenUpdateRequestDto
-import com.template.integration.auth.dto.AccessTokenUpdateResponseDto
-import com.template.integration.auth.dto.LoginRequestDto
-import com.template.integration.auth.dto.LoginResponseDto
-import com.template.integration.auth.service.AuthService
+import com.template.auth.dto.AccessTokenUpdateRequestDto
+import com.template.auth.dto.AccessTokenUpdateResponseDto
+import com.template.auth.dto.LoginRequestDto
+import com.template.auth.dto.LoginResponseDto
+import com.template.auth.service.AuthService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController

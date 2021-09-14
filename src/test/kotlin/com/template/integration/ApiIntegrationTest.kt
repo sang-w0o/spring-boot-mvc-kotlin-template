@@ -1,8 +1,8 @@
 package com.template.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.template.integration.auth.exception.UserIdNotFoundException
-import com.template.integration.auth.tools.JwtTokenUtil
+import com.template.auth.exception.UserIdNotFoundException
+import com.template.auth.tools.JwtTokenUtil
 import com.template.domain.user.User
 import com.template.domain.user.UserRepository
 import org.junit.jupiter.api.AfterEach

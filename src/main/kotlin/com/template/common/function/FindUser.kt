@@ -1,6 +1,6 @@
 package com.template.common.function
 
-import com.template.integration.auth.exception.UserUnAuthorizedException
+import com.template.auth.exception.UserUnAuthorizedException
 import com.template.domain.user.User
 import com.template.domain.user.UserRepository
 import com.template.security.service.UserDetailsImpl

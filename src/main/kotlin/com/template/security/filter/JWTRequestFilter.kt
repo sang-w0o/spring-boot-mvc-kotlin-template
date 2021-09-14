@@ -1,7 +1,7 @@
 package com.template.security.filter
 
-import com.template.integration.auth.exception.AuthenticateException
-import com.template.integration.auth.tools.JwtTokenUtil
+import com.template.auth.exception.AuthenticateException
+import com.template.auth.tools.JwtTokenUtil
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.web.filter.OncePerRequestFilter
