@@ -43,6 +43,7 @@ dependencies {
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(kotlin("test-junit"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testImplementation("com.h2database:h2")
     testImplementation("org.apache.httpcomponents:httpclient:4.5.11")
