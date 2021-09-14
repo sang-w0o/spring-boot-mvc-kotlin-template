@@ -1,6 +1,6 @@
 package com.template.common.function
 
-import com.template.auth.exception.InvalidAccessException
+import com.template.integration.auth.exception.InvalidAccessException
 import org.springframework.stereotype.Component
 import java.util.function.Consumer
 

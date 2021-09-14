@@ -1,4 +1,4 @@
-package com.template.auth.exception
+package com.template.integration.auth.exception
 
 import com.template.common.exception.NotFoundException
 

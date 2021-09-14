@@ -1,6 +1,6 @@
 package com.template.security.config
 
-import com.template.auth.tools.JwtTokenUtil
+import com.template.integration.auth.tools.JwtTokenUtil
 import com.template.security.filter.JWTRequestFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

@@ -1,6 +1,6 @@
 package com.template.config
 
-import com.template.auth.exception.AuthenticateException
+import com.template.integration.auth.exception.AuthenticateException
 import com.template.common.dto.ErrorResponseDto
 import com.template.common.exception.ApiException
 import org.springframework.http.HttpHeaders

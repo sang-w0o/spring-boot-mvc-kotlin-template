@@ -1,6 +1,6 @@
-package com.template.auth.tools
+package com.template.integration.auth.tools
 
-import com.template.auth.exception.AuthenticateException
+import com.template.integration.auth.exception.AuthenticateException
 import com.template.security.service.UserDetailsImpl
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
