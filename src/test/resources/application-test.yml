@@ -13,3 +13,5 @@ spring:
 
 jwt:
   secret: TestJwtSecretKey
+  accessTokenExp: 86400000
+  refreshTokenExp: 604800000

@@ -1,4 +1,4 @@
-package com.template
+package com.template.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.template.auth.exception.UserIdNotFoundException

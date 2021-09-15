@@ -24,3 +24,5 @@ info:
 
 jwt:
   secret: ${JWT_SECRET}
+  accessTokenExp: 86400000
+  refreshTokenExp: 604800000
