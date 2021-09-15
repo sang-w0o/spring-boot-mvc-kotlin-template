@@ -1,8 +1,8 @@
 package com.template.integration.auth
 
 import com.jayway.jsonpath.JsonPath
-import com.template.integration.ApiIntegrationTest
 import com.template.auth.dto.AccessTokenUpdateRequestDto
+import com.template.integration.ApiIntegrationTest
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.junit.jupiter.api.Assertions.assertFalse

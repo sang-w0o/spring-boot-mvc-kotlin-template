@@ -9,7 +9,6 @@ import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.SignatureException
 import io.jsonwebtoken.UnsupportedJwtException
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Component
 import java.lang.IllegalArgumentException
@@ -17,15 +16,7 @@ import java.util.Date
 import java.util.function.Function
 
 @Component
-class JwtTokenUtil {
-
-    @Value("\${jwt.secret}")
-    lateinit var secretKey: String
-
-    companion object {
-        private const val ACCESS_TOKEN_EXP: Int = 86400000
-        private const val REFRESH_TOKEN_EXP: Int = 86400000 * 7
-    }
+class JwtTokenUtil(val jwtProperties: JwtProperties) {
 
     private fun getUserId(claim: Claims): Int {
         try {
@@ -41,7 +32,7 @@ class JwtTokenUtil {
 
     private fun extractAllClaims(token: String): Claims {
         try {
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).body
+            return Jwts.parser().setSigningKey(jwtProperties.secret).parseClaimsJws(token).body
         } catch (expiredJwtException: ExpiredJwtException) {
             throw AuthenticateException("Jwt 토큰이 만료되었습니다.")
         } catch (unsupportedJwtException: UnsupportedJwtException) {
@@ -60,7 +51,7 @@ class JwtTokenUtil {
             .setClaims(claims)
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + exp))
-            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .signWith(SignatureAlgorithm.HS256, jwtProperties.secret)
             .compact()
     }
 
@@ -76,16 +67,20 @@ class JwtTokenUtil {
         return extractExp(token).before(Date())
     }
 
+    fun verify(token: String) {
+        extractAllClaims(token)
+    }
+
     fun generateAccessToken(userId: Int): String {
         val claims: MutableMap<String, Any> = mutableMapOf()
         claims["userId"] = userId
-        return createToken(claims, ACCESS_TOKEN_EXP)
+        return createToken(claims, jwtProperties.accessTokenExp)
     }
 
     fun generateRefreshToken(userId: Int): String {
         val claims: MutableMap<String, Any> = mutableMapOf()
         claims["userId"] = userId
-        return createToken(claims, REFRESH_TOKEN_EXP)
+        return createToken(claims, jwtProperties.refreshTokenExp)
     }
 
     fun getAuthentication(token: String): UsernamePasswordAuthenticationToken {

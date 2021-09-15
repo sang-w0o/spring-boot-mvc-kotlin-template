@@ -8,7 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.Date
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -43,7 +43,7 @@ class JwtTokenUtilTest {
     @Test
     fun oldAccessTokenIsExpired() {
         val oldAccessToken = generateExpiredToken(jwtProperties.accessTokenExp)
-        val exception = assertFailsWith<AuthenticateException>{ jwtTokenUtil.verify(oldAccessToken) }
+        val exception = assertFailsWith<AuthenticateException> { jwtTokenUtil.verify(oldAccessToken) }
         assertEquals("Jwt 토큰이 만료되었습니다.", exception.message!!)
     }
 
@@ -51,7 +51,7 @@ class JwtTokenUtilTest {
     @Test
     fun oldRefreshTokenIsExpired() {
         val oldRefreshToken = generateExpiredToken(jwtProperties.refreshTokenExp)
-        val exception = assertFailsWith<AuthenticateException>{ jwtTokenUtil.verify(oldRefreshToken) }
+        val exception = assertFailsWith<AuthenticateException> { jwtTokenUtil.verify(oldRefreshToken) }
         assertEquals("Jwt 토큰이 만료되었습니다.", exception.message!!)
     }
 
@@ -59,7 +59,7 @@ class JwtTokenUtilTest {
     @Test
     fun wrongToken() {
         val wrongToken = "WRONG TOKEN"
-        val exception = assertFailsWith<AuthenticateException>{ jwtTokenUtil.verify(wrongToken) }
+        val exception = assertFailsWith<AuthenticateException> { jwtTokenUtil.verify(wrongToken) }
         assertEquals("잘못된 형식의 Jwt 토큰입니다.", exception.message!!)
     }
 
@@ -67,7 +67,7 @@ class JwtTokenUtilTest {
     @Test
     fun wrongSignatureToken() {
         val wrongToken = generateOtherSignatureToken(jwtProperties.accessTokenExp)
-        val exception = assertFailsWith<AuthenticateException>{ jwtTokenUtil.verify(wrongToken) }
+        val exception = assertFailsWith<AuthenticateException> { jwtTokenUtil.verify(wrongToken) }
         assertEquals("Jwt Signature이 잘못된 값입니다.", exception.message!!)
     }
 

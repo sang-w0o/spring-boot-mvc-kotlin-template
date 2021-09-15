@@ -37,6 +37,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("mysql:mysql-connector-java")
     implementation("org.hibernate:hibernate-core:5.4.2.Final")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
