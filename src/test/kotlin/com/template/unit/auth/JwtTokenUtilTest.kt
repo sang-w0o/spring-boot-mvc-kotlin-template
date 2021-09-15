@@ -3,48 +3,33 @@ package com.template.unit.auth
 import com.template.auth.exception.AuthenticateException
 import com.template.auth.tools.JwtProperties
 import com.template.auth.tools.JwtTokenUtil
-import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-@SpringBootTest
-@ExtendWith(SpringExtension::class)
-@EnableConfigurationProperties(JwtProperties::class)
-@ContextConfiguration(initializers = [ConfigDataApplicationContextInitializer::class])
-@ActiveProfiles("test")
 class JwtTokenUtilTest {
 
     companion object {
         const val USER_ID = 1
         const val EXTRA_TIME = 2000000
+        const val SECRET_KEY = "SecretKey"
+        const val ACCESS_TOKEN_EXP = 86400000
+        const val REFRESH_TOKEN_EXP = 86400000 * 7
     }
 
-    @Autowired
-    private lateinit var jwtProperties: JwtProperties
-
-    @Autowired
-    private lateinit var jwtTokenUtil: JwtTokenUtil
+    private val jwtProperties = JwtProperties(SECRET_KEY, ACCESS_TOKEN_EXP, REFRESH_TOKEN_EXP)
+    private val jwtTokenUtil = JwtTokenUtil(jwtProperties)
 
     @DisplayName("AccessToken 생성")
     @Test
     fun accessTokenIsCreated() {
         val accessToken = jwtTokenUtil.generateAccessToken(USER_ID)
         assertFalse(jwtTokenUtil.isTokenExpired(accessToken))
-        println(jwtProperties.secret)
     }
 
     @DisplayName("RefreshToken 생성")
@@ -99,15 +84,6 @@ class JwtTokenUtilTest {
         assertEquals("JWT Claim에 userId가 없습니다.", exception.message!!)
     }
 
-    private fun createToken(claims: Map<String, Any>, exp: Int): String {
-        return Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(Date(System.currentTimeMillis()))
-            .setExpiration(Date(System.currentTimeMillis() + exp))
-            .signWith(SignatureAlgorithm.HS256, jwtProperties.secret)
-            .compact()
-    }
-
     private fun generateExpiredToken(exp: Int): String {
         val realExp = EXTRA_TIME + exp
         val claims: MutableMap<String, Any> = mutableMapOf()
@@ -129,9 +105,5 @@ class JwtTokenUtilTest {
             .setExpiration(Date(System.currentTimeMillis() + exp))
             .signWith(SignatureAlgorithm.HS256, "Other Signature")
             .compact()
-    }
-
-    private fun extractExp(token: String): Date {
-        return jwtTokenUtil.extractClaim(token, Claims::getExpiration)
     }
 }
