@@ -15,6 +15,7 @@ import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import kotlin.test.assertFailsWith
 
 class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
@@ -22,10 +23,12 @@ class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
     private lateinit var authService: AuthService
 
     @MockBean
-    lateinit var userRepository: UserRepository
+    private lateinit var userRepository: UserRepository
 
     @MockBean
     private lateinit var jwtTokenUtil: JwtTokenUtil
+
+    private val encoder = BCryptPasswordEncoder(10)
 
     @BeforeEach
     fun setUp() {

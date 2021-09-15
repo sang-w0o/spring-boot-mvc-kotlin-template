@@ -35,7 +35,7 @@ class AuthService(
         if (!encoder.matches(requestDto.password, user.password)) throw LoginException()
         return LoginResponseDto(
             accessToken = jwtTokenUtil.generateAccessToken(user.id!!),
-            refreshToken = jwtTokenUtil.generateAccessToken(user.id),
+            refreshToken = jwtTokenUtil.generateAccessToken(user.id!!),
         )
     }
 }

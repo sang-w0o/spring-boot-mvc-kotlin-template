@@ -14,7 +14,7 @@ class User(name: String, email: String, password: String) : CreatedAtEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "user_id")
-    val id: Int? = null
+    var id: Int? = null
 
     @Column(nullable = false, length = 100)
     var name: String = name
