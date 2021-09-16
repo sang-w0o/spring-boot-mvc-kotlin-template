@@ -15,12 +15,18 @@ spring:
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+
 info:
   application:
     author: Sangwoo Ra(robbyra@gmail.com)
     version: 0.1.0
     description: Template repository for building Spring Boot(MVC) Applications using Kotlin
-    more_info: https://github.com/sang-w0o/spring-boot-kotlin-template
+    more_info: https://github.com/sang-w0o/spring-boot-mvc-kotlin-template
 
 jwt:
   secret: ${JWT_SECRET}
