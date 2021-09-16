@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:latest AS builder
+FROM openjdk:8-jdk-alpine AS builder
 WORKDIR application
 COPY gradlew .
 COPY gradle gradle
@@ -11,7 +11,7 @@ ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM adoptopenjdk/openjdk8:latest
+FROM openjdk:8-jdk-alpine
 WORKDIR application
 COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/spring-boot-loader/ ./
