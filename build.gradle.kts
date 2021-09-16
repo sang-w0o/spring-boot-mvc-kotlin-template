@@ -5,9 +5,10 @@ plugins {
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
     id("org.jetbrains.kotlin.plugin.noarg") version "1.4.31"
-    id("org.springframework.boot") version "2.4.3"
+    id("org.springframework.boot") version "2.5.4"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.0"
+    id("application")
 }
 
 group = "com.template"
@@ -39,15 +40,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("mysql:mysql-connector-java")
-    implementation("org.hibernate:hibernate-core:5.4.2.Final")
+    implementation("org.hibernate:hibernate-core:5.5.7.Final")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(kotlin("test-junit"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
     testImplementation("com.h2database:h2")
-    testImplementation("org.apache.httpcomponents:httpclient:4.5.11")
+    testImplementation("org.apache.httpcomponents:httpclient:4.5.13")
 }
 
 tasks.test {
