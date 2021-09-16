@@ -15,6 +15,12 @@ spring:
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+
 info:
   application:
     author: Sangwoo Ra(robbyra@gmail.com)
