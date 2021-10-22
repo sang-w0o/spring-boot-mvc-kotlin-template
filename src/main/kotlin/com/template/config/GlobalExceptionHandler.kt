@@ -22,7 +22,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     protected fun handleApiException(exception: Exception, request: WebRequest): ResponseEntity<Any> {
         return when (exception) {
             is ApiException -> {
-                handleExceptionInternal(exception, null, HttpHeaders(), exception.httpStatus, request)
+                handleExceptionInternal(exception, null, HttpHeaders(), exception.status, request)
             }
             is AuthenticateException -> {
                 handleExceptionInternal(exception, null, HttpHeaders(), HttpStatus.UNAUTHORIZED, request)
