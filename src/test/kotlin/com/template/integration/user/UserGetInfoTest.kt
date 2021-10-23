@@ -1,8 +1,8 @@
 package com.template.integration.user
 
 import com.template.integration.ApiIntegrationTest
-import com.template.util.TestUtils.EMAIL
-import com.template.util.TestUtils.NAME
+import com.template.util.EMAIL
+import com.template.util.NAME
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.ResultActionsDsl

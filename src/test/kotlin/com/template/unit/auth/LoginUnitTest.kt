@@ -6,10 +6,10 @@ import com.template.auth.service.AuthService
 import com.template.auth.tools.JwtTokenUtil
 import com.template.unit.BaseUnitTest
 import com.template.user.domain.User
-import com.template.util.TestUtils.EMAIL
-import com.template.util.TestUtils.NAME
-import com.template.util.TestUtils.PASSWORD
-import com.template.util.TestUtils.USER_ID
+import com.template.util.EMAIL
+import com.template.util.NAME
+import com.template.util.PASSWORD
+import com.template.util.USER_ID
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach

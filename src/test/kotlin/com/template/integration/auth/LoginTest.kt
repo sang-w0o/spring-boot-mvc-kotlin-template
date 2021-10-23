@@ -3,8 +3,8 @@ package com.template.integration.auth
 import com.jayway.jsonpath.JsonPath
 import com.template.auth.dto.LoginRequestDto
 import com.template.integration.ApiIntegrationTest
-import com.template.util.TestUtils.EMAIL
-import com.template.util.TestUtils.PASSWORD
+import com.template.util.EMAIL
+import com.template.util.PASSWORD
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

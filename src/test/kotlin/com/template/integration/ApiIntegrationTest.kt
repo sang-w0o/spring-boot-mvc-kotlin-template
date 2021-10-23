@@ -5,9 +5,9 @@ import com.template.auth.exception.UserIdNotFoundException
 import com.template.auth.tools.JwtTokenUtil
 import com.template.user.domain.User
 import com.template.user.domain.UserRepository
-import com.template.util.TestUtils.EMAIL
-import com.template.util.TestUtils.NAME
-import com.template.util.TestUtils.PASSWORD
+import com.template.util.EMAIL
+import com.template.util.NAME
+import com.template.util.PASSWORD
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired

@@ -4,10 +4,10 @@ import com.template.auth.exception.AuthenticateException
 import com.template.auth.tools.JwtTokenUtil
 import com.template.unit.BaseUnitTest
 import com.template.user.dto.UserDto
-import com.template.util.TestUtils.EXTRA_TIME
-import com.template.util.TestUtils.USER_ID
-import com.template.util.TestUtils.generateExpiredToken
-import com.template.util.TestUtils.generateOtherSignatureToken
+import com.template.util.EXTRA_TIME
+import com.template.util.USER_ID
+import com.template.util.generateExpiredToken
+import com.template.util.generateOtherSignatureToken
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.junit.jupiter.api.Assertions.assertFalse

@@ -3,14 +3,7 @@ package com.template.unit
 import com.template.auth.tools.JwtProperties
 import com.template.user.domain.User
 import com.template.user.domain.UserRepository
-import com.template.util.TestUtils.EMAIL
-import com.template.util.TestUtils.EXTRA_TIME
-import com.template.util.TestUtils.JWT_ACCESS_TOKEN_EXP
-import com.template.util.TestUtils.JWT_REFRESH_TOKEN_EXP
-import com.template.util.TestUtils.JWT_SECRET
-import com.template.util.TestUtils.NAME
-import com.template.util.TestUtils.PASSWORD
-import com.template.util.TestUtils.USER_ID
+import com.template.util.*
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.junit.jupiter.api.extension.ExtendWith
