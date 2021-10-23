@@ -3,6 +3,8 @@ package com.template.integration.auth
 import com.jayway.jsonpath.JsonPath
 import com.template.auth.dto.LoginRequestDto
 import com.template.integration.ApiIntegrationTest
+import com.template.util.TestUtils.EMAIL
+import com.template.util.TestUtils.PASSWORD
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -58,7 +60,7 @@ class LoginTest : ApiIntegrationTest() {
 
         apiCall(requestDto).andExpect {
             status { isNotFound() }
-            assertErrorResponse(this)
+            assertErrorResponse(this, "이메일 또는 비밀번호가 잘못되었습니다.")
         }
     }
 
@@ -68,7 +70,7 @@ class LoginTest : ApiIntegrationTest() {
         val requestDto = getLoginRequestDto(EMAIL, WRONG_PASSWORD)
         apiCall(requestDto).andExpect {
             status { isNotFound() }
-            assertErrorResponse(this)
+            assertErrorResponse(this, "이메일 또는 비밀번호가 잘못되었습니다.")
         }
     }
 }

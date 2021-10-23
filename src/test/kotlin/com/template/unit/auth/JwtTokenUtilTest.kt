@@ -1,36 +1,33 @@
 package com.template.unit.auth
 
 import com.template.auth.exception.AuthenticateException
-import com.template.auth.tools.JwtProperties
 import com.template.auth.tools.JwtTokenUtil
+import com.template.unit.BaseUnitTest
+import com.template.user.dto.UserDto
+import com.template.util.TestUtils.EXTRA_TIME
+import com.template.util.TestUtils.USER_ID
+import com.template.util.TestUtils.generateExpiredToken
+import com.template.util.TestUtils.generateOtherSignatureToken
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import java.util.Date
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.Mockito.`when`
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class JwtTokenUtilTest {
+class JwtTokenUtilTest : BaseUnitTest() {
 
-    companion object {
-        const val USER_ID = 1
-        const val EXTRA_TIME = 2000000
-        const val SECRET_KEY = "SecretKey"
-        const val ACCESS_TOKEN_EXP = 86400000
-        const val REFRESH_TOKEN_EXP = 86400000 * 7
-    }
-
-    private val jwtProperties = JwtProperties()
-    private val jwtTokenUtil = JwtTokenUtil(jwtProperties)
+    private lateinit var jwtTokenUtil: JwtTokenUtil
 
     @BeforeEach
     fun setUp() {
-        jwtProperties.secret = SECRET_KEY
-        jwtProperties.accessTokenExp = ACCESS_TOKEN_EXP
-        jwtProperties.refreshTokenExp = REFRESH_TOKEN_EXP
+        jwtTokenUtil = JwtTokenUtil(userRepository, jwtProperties)
     }
 
     @DisplayName("AccessToken 생성")
@@ -50,7 +47,7 @@ class JwtTokenUtilTest {
     @DisplayName("만료된 AccessToken 검증")
     @Test
     fun oldAccessTokenIsExpired() {
-        val oldAccessToken = generateExpiredToken(jwtProperties.accessTokenExp)
+        val oldAccessToken = generateExpiredToken(jwtProperties.accessTokenExp, jwtProperties.secret)
         val exception = assertFailsWith<AuthenticateException> { jwtTokenUtil.verify(oldAccessToken) }
         assertEquals("Jwt 토큰이 만료되었습니다.", exception.message!!)
     }
@@ -58,7 +55,7 @@ class JwtTokenUtilTest {
     @DisplayName("만료된 RefreshToken 검증")
     @Test
     fun oldRefreshTokenIsExpired() {
-        val oldRefreshToken = generateExpiredToken(jwtProperties.refreshTokenExp)
+        val oldRefreshToken = generateExpiredToken(jwtProperties.refreshTokenExp, jwtProperties.secret)
         val exception = assertFailsWith<AuthenticateException> { jwtTokenUtil.verify(oldRefreshToken) }
         assertEquals("Jwt 토큰이 만료되었습니다.", exception.message!!)
     }
@@ -92,26 +89,27 @@ class JwtTokenUtilTest {
         assertEquals("JWT Claim에 userId가 없습니다.", exception.message!!)
     }
 
-    private fun generateExpiredToken(exp: Int): String {
-        val realExp = EXTRA_TIME + exp
-        val claims: MutableMap<String, Any> = mutableMapOf()
-        claims["userId"] = USER_ID
-        return Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(Date(System.currentTimeMillis() - realExp))
-            .setExpiration(Date(System.currentTimeMillis() - EXTRA_TIME))
-            .signWith(SignatureAlgorithm.HS256, jwtProperties.secret)
-            .compact()
+    @DisplayName("정상적인 token일 경우 검증 성공")
+    @Test
+    fun correctTokenVerifySuccess() {
+        val user = getMockUser()
+        `when`(userRepository.findById(anyInt())).thenReturn(Optional.ofNullable(user))
+        val accessToken = jwtTokenUtil.generateAccessToken(user.id!!)
+        val authentication = jwtTokenUtil.verify(accessToken)
+        assertTrue(authentication.principal is UserDto)
+        val userDto = authentication.principal as UserDto
+        assertEquals(user.name, userDto.name)
+        assertEquals(user.email, userDto.email)
+        assertEquals(user.password, userDto.password)
+        assertEquals(user.id, userDto.id)
     }
 
-    private fun generateOtherSignatureToken(exp: Int): String {
-        val claims: MutableMap<String, Any> = mutableMapOf()
-        claims["userId"] = USER_ID
-        return Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(Date(System.currentTimeMillis()))
-            .setExpiration(Date(System.currentTimeMillis() + exp))
-            .signWith(SignatureAlgorithm.HS256, "Other Signature")
-            .compact()
+    @DisplayName("존재하지 않는 userId인 경우 검증 실패")
+    @Test
+    fun tokenWithInvalidUserId() {
+        `when`(userRepository.findById(anyInt())).thenReturn(Optional.empty())
+        val accessToken = jwtTokenUtil.generateAccessToken(USER_ID)
+        val exception = assertFailsWith<AuthenticateException> { jwtTokenUtil.verify(accessToken) }
+        assertEquals("Invalid userId.", exception.message!!)
     }
 }

@@ -1,7 +1,7 @@
 package com.template.common.function
 
-import com.template.domain.user.User
-import com.template.domain.user.UserRepository
+import com.template.user.domain.User
+import com.template.user.domain.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component

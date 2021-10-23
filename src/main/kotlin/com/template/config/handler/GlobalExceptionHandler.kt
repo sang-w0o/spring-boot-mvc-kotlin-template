@@ -1,4 +1,4 @@
-package com.template.config
+package com.template.config.handler
 
 import com.template.auth.exception.AuthenticateException
 import com.template.common.dto.ErrorResponseDto

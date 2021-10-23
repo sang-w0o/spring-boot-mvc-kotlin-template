@@ -1,7 +1,7 @@
 package com.template.auth.tools
 
 import com.template.auth.exception.AuthenticateException
-import com.template.security.service.UserDetailsImpl
+import com.template.user.domain.UserRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
@@ -10,13 +10,17 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.SignatureException
 import io.jsonwebtoken.UnsupportedJwtException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import java.lang.IllegalArgumentException
-import java.util.Date
+import java.util.*
 import java.util.function.Function
 
 @Component
-class JwtTokenUtil(val jwtProperties: JwtProperties) {
+class JwtTokenUtil(
+    private val userRepository: UserRepository,
+    private val jwtProperties: JwtProperties
+) {
 
     private fun getUserId(claim: Claims): Int {
         try {
@@ -67,8 +71,10 @@ class JwtTokenUtil(val jwtProperties: JwtProperties) {
         return extractExp(token).before(Date())
     }
 
-    fun verify(token: String) {
+    fun verify(token: String): Authentication {
         extractAllClaims(token)
+        val user = userRepository.findById(extractUserId(token)).orElseThrow { AuthenticateException("Invalid userId.") }
+        return UsernamePasswordAuthenticationToken(user.toUserDto(), "", mutableListOf())
     }
 
     fun generateAccessToken(userId: Int): String {
@@ -81,10 +87,5 @@ class JwtTokenUtil(val jwtProperties: JwtProperties) {
         val claims: MutableMap<String, Any> = mutableMapOf()
         claims["userId"] = userId
         return createToken(claims, jwtProperties.refreshTokenExp)
-    }
-
-    fun getAuthentication(token: String): UsernamePasswordAuthenticationToken {
-        val userDetails = UserDetailsImpl(extractUserId(token))
-        return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 }

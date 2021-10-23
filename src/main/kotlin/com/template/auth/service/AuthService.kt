@@ -7,7 +7,7 @@ import com.template.auth.dto.LoginResponseDto
 import com.template.auth.exception.AuthenticateException
 import com.template.auth.exception.LoginException
 import com.template.auth.tools.JwtTokenUtil
-import com.template.domain.user.UserRepository
+import com.template.user.domain.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

@@ -4,7 +4,9 @@ import com.template.auth.dto.AccessTokenUpdateRequestDto
 import com.template.auth.exception.AuthenticateException
 import com.template.auth.service.AuthService
 import com.template.auth.tools.JwtTokenUtil
-import com.template.domain.user.UserRepository
+import com.template.unit.BaseUnitTest
+import com.template.util.TestUtils.TOKEN
+import com.template.util.TestUtils.USER_ID
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
@@ -21,9 +23,6 @@ import kotlin.test.assertFailsWith
 class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
 
     private lateinit var authService: AuthService
-
-    @MockBean
-    private lateinit var userRepository: UserRepository
 
     @MockBean
     private lateinit var jwtTokenUtil: JwtTokenUtil

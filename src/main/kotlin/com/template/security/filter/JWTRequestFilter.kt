@@ -28,8 +28,7 @@ class JWTRequestFilter(
             val authorizationHeader = request.getHeader(AUTHORIZATION_HEADER)
                 ?: throw AuthenticateException("Authorization Header is missing.")
             val token = extractAccessToken(authorizationHeader)
-            if (jwtTokenUtil.isTokenExpired(token)) throw AuthenticateException("AccessToken has been expired.")
-            val authentication = jwtTokenUtil.getAuthentication(token)
+            val authentication = jwtTokenUtil.verify(token)
             val context = SecurityContextHolder.getContext()
             context.authentication = authentication
             filterChain.doFilter(request, response)

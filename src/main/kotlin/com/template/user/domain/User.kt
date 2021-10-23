@@ -1,6 +1,7 @@
-package com.template.domain.user
+package com.template.user.domain
 
 import com.template.domain.common.CreatedAtEntity
+import com.template.user.dto.UserDto
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -24,4 +25,6 @@ class User(name: String, email: String, password: String) : CreatedAtEntity() {
 
     @Column(nullable = false, length = 100, unique = true)
     var email: String = email
+
+    fun toUserDto() = UserDto(this)
 }
