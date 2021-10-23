@@ -55,6 +55,10 @@ tasks.test {
     useJUnitPlatform()
 }
 
+configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    disabledRules.set(setOf("no-wildcard-imports"))
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
