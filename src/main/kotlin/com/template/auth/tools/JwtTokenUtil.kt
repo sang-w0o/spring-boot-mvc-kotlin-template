@@ -10,6 +10,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.SignatureException
 import io.jsonwebtoken.UnsupportedJwtException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -70,8 +71,10 @@ class JwtTokenUtil(
         return extractExp(token).before(Date())
     }
 
-    fun verify(token: String) {
+    fun verify(token: String): Authentication {
         extractAllClaims(token)
+        val user = userRepository.findById(extractUserId(token)).orElseThrow { AuthenticateException("Invalid userId.") }
+        return UsernamePasswordAuthenticationToken(user.toUserDto(), "", mutableListOf())
     }
 
     fun generateAccessToken(userId: Int): String {
@@ -84,10 +87,5 @@ class JwtTokenUtil(
         val claims: MutableMap<String, Any> = mutableMapOf()
         claims["userId"] = userId
         return createToken(claims, jwtProperties.refreshTokenExp)
-    }
-
-    fun getAuthentication(token: String): UsernamePasswordAuthenticationToken {
-        val user = userRepository.findById(extractUserId(token)).orElseThrow { AuthenticateException("Invalid userId.") }
-        return UsernamePasswordAuthenticationToken(user.toUserDto(), "", mutableListOf())
     }
 }
