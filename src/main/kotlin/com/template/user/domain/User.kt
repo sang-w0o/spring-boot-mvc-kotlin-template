@@ -1,4 +1,4 @@
-package com.template.domain.user
+package com.template.user.domain
 
 import com.template.domain.common.CreatedAtEntity
 import javax.persistence.Column

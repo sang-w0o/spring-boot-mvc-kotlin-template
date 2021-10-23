@@ -3,8 +3,8 @@ package com.template.integration
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.template.auth.exception.UserIdNotFoundException
 import com.template.auth.tools.JwtTokenUtil
-import com.template.domain.user.User
-import com.template.domain.user.UserRepository
+import com.template.user.domain.User
+import com.template.user.domain.UserRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired

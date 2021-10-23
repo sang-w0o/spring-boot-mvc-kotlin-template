@@ -4,7 +4,7 @@ import com.template.auth.dto.AccessTokenUpdateRequestDto
 import com.template.auth.exception.AuthenticateException
 import com.template.auth.service.AuthService
 import com.template.auth.tools.JwtTokenUtil
-import com.template.domain.user.UserRepository
+import com.template.user.domain.UserRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
