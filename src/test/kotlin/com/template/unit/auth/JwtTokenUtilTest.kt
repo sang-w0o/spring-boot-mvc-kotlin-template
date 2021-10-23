@@ -3,16 +3,21 @@ package com.template.unit.auth
 import com.template.auth.exception.AuthenticateException
 import com.template.auth.tools.JwtTokenUtil
 import com.template.unit.BaseUnitTest
+import com.template.user.dto.UserDto
 import com.template.util.TestUtils.EXTRA_TIME
+import com.template.util.TestUtils.USER_ID
 import com.template.util.TestUtils.generateExpiredToken
 import com.template.util.TestUtils.generateOtherSignatureToken
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import java.util.Date
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.Mockito.`when`
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -82,5 +87,29 @@ class JwtTokenUtilTest : BaseUnitTest() {
             .compact()
         val exception = assertFailsWith<AuthenticateException> { jwtTokenUtil.extractUserId(wrongToken) }
         assertEquals("JWT Claim에 userId가 없습니다.", exception.message!!)
+    }
+
+    @DisplayName("정상적인 token일 경우 검증 성공")
+    @Test
+    fun correctTokenVerifySuccess() {
+        val user = getMockUser()
+        `when`(userRepository.findById(anyInt())).thenReturn(Optional.ofNullable(user))
+        val accessToken = jwtTokenUtil.generateAccessToken(user.id!!)
+        val authentication = jwtTokenUtil.verify(accessToken)
+        assertTrue(authentication.principal is UserDto)
+        val userDto = authentication.principal as UserDto
+        assertEquals(user.name, userDto.name)
+        assertEquals(user.email, userDto.email)
+        assertEquals(user.password, userDto.password)
+        assertEquals(user.id, userDto.id)
+    }
+
+    @DisplayName("존재하지 않는 userId인 경우 검증 실패")
+    @Test
+    fun tokenWithInvalidUserId() {
+        `when`(userRepository.findById(anyInt())).thenReturn(Optional.empty())
+        val accessToken = jwtTokenUtil.generateAccessToken(USER_ID)
+        val exception = assertFailsWith<AuthenticateException> { jwtTokenUtil.verify(accessToken) }
+        assertEquals("Invalid userId.", exception.message!!)
     }
 }

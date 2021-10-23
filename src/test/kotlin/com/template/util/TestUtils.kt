@@ -1,6 +1,5 @@
 package com.template.util
 
-import com.template.unit.BaseUnitTest
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import java.util.*
@@ -31,7 +30,7 @@ object TestUtils {
 
     fun generateOtherSignatureToken(exp: Int): String {
         val claims: MutableMap<String, Any> = mutableMapOf()
-        claims["userId"] = BaseUnitTest.USER_ID
+        claims["userId"] = USER_ID
         return Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(Date(System.currentTimeMillis()))

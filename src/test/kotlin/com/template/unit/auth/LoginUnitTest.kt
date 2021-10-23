@@ -6,6 +6,10 @@ import com.template.auth.service.AuthService
 import com.template.auth.tools.JwtTokenUtil
 import com.template.unit.BaseUnitTest
 import com.template.user.domain.User
+import com.template.util.TestUtils.EMAIL
+import com.template.util.TestUtils.NAME
+import com.template.util.TestUtils.PASSWORD
+import com.template.util.TestUtils.USER_ID
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
@@ -53,7 +57,7 @@ class LoginUnitTest : BaseUnitTest() {
         `when`(encoder.matches(anyString(), anyString())).thenReturn(false)
         val requestDto = LoginRequestDto(EMAIL, PASSWORD)
         val exception = assertFailsWith<LoginException> { authService.login(requestDto) }
-        assertEquals("이메일 또는 비밀번호가 잘못되었습니다.", exception.message!!)
+        assertEquals("이메일 또는 비밀번호가 잘못되었습니다.", exception.message)
     }
 
     @DisplayName("로그인 실패 - 존재하지 않는 이메일")
@@ -62,6 +66,6 @@ class LoginUnitTest : BaseUnitTest() {
         `when`(userRepository.findByEmail(anyString())).thenReturn(Optional.empty())
         val requestDto = LoginRequestDto(EMAIL, PASSWORD)
         val exception = assertFailsWith<LoginException> { authService.login(requestDto) }
-        assertEquals("이메일 또는 비밀번호가 잘못되었습니다.", exception.message!!)
+        assertEquals("이메일 또는 비밀번호가 잘못되었습니다.", exception.message)
     }
 }
