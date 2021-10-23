@@ -1,7 +1,7 @@
 package com.template.auth.tools
 
 import com.template.auth.exception.AuthenticateException
-import com.template.security.service.UserDetailsImpl
+import com.template.user.domain.UserRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
@@ -12,11 +12,14 @@ import io.jsonwebtoken.UnsupportedJwtException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Component
 import java.lang.IllegalArgumentException
-import java.util.Date
+import java.util.*
 import java.util.function.Function
 
 @Component
-class JwtTokenUtil(val jwtProperties: JwtProperties) {
+class JwtTokenUtil(
+    private val userRepository: UserRepository,
+    private val jwtProperties: JwtProperties
+) {
 
     private fun getUserId(claim: Claims): Int {
         try {
@@ -84,7 +87,7 @@ class JwtTokenUtil(val jwtProperties: JwtProperties) {
     }
 
     fun getAuthentication(token: String): UsernamePasswordAuthenticationToken {
-        val userDetails = UserDetailsImpl(extractUserId(token))
-        return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
+        val user = userRepository.findById(extractUserId(token)).orElseThrow { AuthenticateException("Invalid userId.") }
+        return UsernamePasswordAuthenticationToken(user.toUserDto(), "", mutableListOf())
     }
 }

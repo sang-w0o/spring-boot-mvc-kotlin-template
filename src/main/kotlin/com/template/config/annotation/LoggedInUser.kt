@@ -1,3 +1,5 @@
 package com.template.config.annotation
 
-annotation class LoggedInUser()
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class LoggedInUser
