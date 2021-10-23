@@ -6,6 +6,7 @@ import com.template.integration.ApiIntegrationTest
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
@@ -30,6 +31,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
         }
     }
 
+    @DisplayName("Success")
     @Test
     fun updateToken_responseIsOkIfAllConditionsAreRight() {
         val userId = getUserId()
@@ -44,6 +46,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
         assertFalse(jwtTokenUtil.isTokenExpired(accessToken))
     }
 
+    @DisplayName("실패 - 토큰이 잘못된 경우")
     @Test
     fun updateToken_responseIsUnAuthorizedIfRefreshTokenIsMalformed() {
         val requestDto = AccessTokenUpdateRequestDto(WRONG_TOKEN)
@@ -53,6 +56,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
         }
     }
 
+    @DisplayName("실패 - 잘못된 userId")
     @Test
     fun updateToken_responseIsUnAuthorizedIfUserIdIsInvalid() {
         val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(-1))
@@ -62,6 +66,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
         }
     }
 
+    @DisplayName("실패 - 만료된 토큰")
     @Test
     fun updateToken_responseIsUnAuthorizedIfAccessTokenIsExpired() {
         val userId = getUserId()
