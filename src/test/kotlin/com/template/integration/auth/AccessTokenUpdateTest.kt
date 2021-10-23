@@ -52,7 +52,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
         val requestDto = AccessTokenUpdateRequestDto(WRONG_TOKEN)
         apiCall(requestDto).andExpect {
             status { isUnauthorized() }
-            assertErrorResponse(this)
+            assertErrorResponse(this, "잘못된 형식의 Jwt 토큰입니다.")
         }
     }
 
@@ -62,7 +62,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
         val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(-1))
         apiCall(requestDto).andExpect {
             status { isUnauthorized() }
-            assertErrorResponse(this)
+            assertErrorResponse(this, "Unauthorized User Id.")
         }
     }
 
@@ -73,7 +73,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
         val requestDto = AccessTokenUpdateRequestDto(generateExpiredRefreshToken(userId))
         apiCall(requestDto).andExpect {
             status { isUnauthorized() }
-            assertErrorResponse(this)
+            assertErrorResponse(this, "Jwt 토큰이 만료되었습니다.")
         }
     }
 

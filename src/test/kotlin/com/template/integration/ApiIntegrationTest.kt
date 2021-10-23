@@ -5,6 +5,9 @@ import com.template.auth.exception.UserIdNotFoundException
 import com.template.auth.tools.JwtTokenUtil
 import com.template.user.domain.User
 import com.template.user.domain.UserRepository
+import com.template.util.TestUtils.EMAIL
+import com.template.util.TestUtils.NAME
+import com.template.util.TestUtils.PASSWORD
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,12 +22,6 @@ import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 abstract class ApiIntegrationTest {
-
-    companion object {
-        const val EMAIL = "test@test.com"
-        const val NAME = "testUserName"
-        const val PASSWORD = "testPassword"
-    }
 
     @Autowired
     protected lateinit var userRepository: UserRepository
@@ -61,11 +58,11 @@ abstract class ApiIntegrationTest {
         return user.id ?: -1
     }
 
-    protected fun assertErrorResponse(dsl: MockMvcResultMatchersDsl) {
+    protected fun assertErrorResponse(dsl: MockMvcResultMatchersDsl, message: String) {
         dsl.jsonPath("timestamp") { exists() }
         dsl.jsonPath("status") { exists() }
         dsl.jsonPath("error") { exists() }
-        dsl.jsonPath("message") { exists() }
+        dsl.jsonPath("message") { value(message) }
         dsl.jsonPath("path") { exists() }
         dsl.jsonPath("remote") { exists() }
     }
