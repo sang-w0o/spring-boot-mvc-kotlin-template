@@ -4,8 +4,8 @@ import com.template.auth.dto.LoginRequestDto
 import com.template.auth.exception.LoginException
 import com.template.auth.service.AuthService
 import com.template.auth.tools.JwtTokenUtil
+import com.template.unit.BaseUnitTest
 import com.template.user.domain.User
-import com.template.user.domain.UserRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
@@ -22,9 +22,6 @@ import kotlin.test.assertFailsWith
 class LoginUnitTest : BaseUnitTest() {
 
     private lateinit var authService: AuthService
-
-    @MockBean
-    private lateinit var userRepository: UserRepository
 
     @MockBean
     private lateinit var encoder: BCryptPasswordEncoder
