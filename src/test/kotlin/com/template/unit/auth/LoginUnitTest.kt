@@ -10,8 +10,8 @@ import com.template.util.EMAIL
 import com.template.util.NAME
 import com.template.util.PASSWORD
 import com.template.util.USER_ID
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -21,7 +21,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.Optional
-import kotlin.test.assertFailsWith
 
 class LoginUnitTest : BaseUnitTest() {
 
@@ -47,8 +46,8 @@ class LoginUnitTest : BaseUnitTest() {
         `when`(encoder.matches(anyString(), anyString())).thenReturn(true)
         val requestDto = LoginRequestDto(EMAIL, PASSWORD)
         val responseDto = authService.login(requestDto)
-        assertFalse(jwtTokenUtil.isTokenExpired(responseDto.accessToken))
-        assertFalse(jwtTokenUtil.isTokenExpired(responseDto.refreshToken))
+        jwtTokenUtil.isTokenExpired(responseDto.accessToken) shouldBe false
+        jwtTokenUtil.isTokenExpired(responseDto.refreshToken) shouldBe false
     }
 
     @DisplayName("로그인 실패 - 비밀번호 불일치")
@@ -56,8 +55,8 @@ class LoginUnitTest : BaseUnitTest() {
     fun login_FailIfWrongPassword() {
         `when`(encoder.matches(anyString(), anyString())).thenReturn(false)
         val requestDto = LoginRequestDto(EMAIL, PASSWORD)
-        val exception = assertFailsWith<LoginException> { authService.login(requestDto) }
-        assertEquals("이메일 또는 비밀번호가 잘못되었습니다.", exception.message)
+        val exception = shouldThrow<LoginException> { authService.login(requestDto) }
+        exception.message shouldBe "이메일 또는 비밀번호가 잘못되었습니다."
     }
 
     @DisplayName("로그인 실패 - 존재하지 않는 이메일")
@@ -65,7 +64,7 @@ class LoginUnitTest : BaseUnitTest() {
     fun login_FailIfWrongEmail() {
         `when`(userRepository.findByEmail(anyString())).thenReturn(Optional.empty())
         val requestDto = LoginRequestDto(EMAIL, PASSWORD)
-        val exception = assertFailsWith<LoginException> { authService.login(requestDto) }
-        assertEquals("이메일 또는 비밀번호가 잘못되었습니다.", exception.message)
+        val exception = shouldThrow<LoginException> { authService.login(requestDto) }
+        exception.message shouldBe "이메일 또는 비밀번호가 잘못되었습니다."
     }
 }
