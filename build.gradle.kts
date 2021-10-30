@@ -47,6 +47,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(kotlin("test-junit"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
+    testImplementation("io.kotest:kotest-runner-junit5:5.0.0.M3")
+    testImplementation("io.kotest:kotest-assertions-core:5.0.0.M3")
     testImplementation("com.h2database:h2")
     testImplementation("org.apache.httpcomponents:httpclient:4.5.13")
 }

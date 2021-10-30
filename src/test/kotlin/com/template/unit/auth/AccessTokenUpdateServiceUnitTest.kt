@@ -7,8 +7,8 @@ import com.template.auth.tools.JwtTokenUtil
 import com.template.unit.BaseUnitTest
 import com.template.util.TOKEN
 import com.template.util.USER_ID
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -18,7 +18,6 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import kotlin.test.assertFailsWith
 
 class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
 
@@ -42,7 +41,7 @@ class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
         `when`(userRepository.existsById(anyInt())).thenReturn(true)
         val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(USER_ID))
         val result = authService.updateAccessToken(requestDto)
-        assertFalse(jwtTokenUtil.isTokenExpired(result.accessToken))
+        jwtTokenUtil.isTokenExpired(result.accessToken) shouldBe false
     }
 
     @DisplayName("AccessToken 갱신 실패 - 잘못된 userId인 경우")
@@ -50,7 +49,7 @@ class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
     fun updateAccessToken_FailWrongUserId() {
         val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(USER_ID))
         val exception = assertThrows <AuthenticateException> { authService.updateAccessToken(requestDto) }
-        assertEquals("Unauthorized User Id.", exception.message!!)
+        exception.message shouldBe "Unauthorized User Id."
     }
 
     @DisplayName("AccessToken 갱신 실패 - 만료된 refreshToken이 주어진 경우")
@@ -58,7 +57,7 @@ class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
     fun updateAccessToken_FailIfExpiredRefreshToken() {
         val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(USER_ID))
         `when`(jwtTokenUtil.isTokenExpired(anyString())).thenReturn(true)
-        val exception = assertFailsWith<AuthenticateException> { authService.updateAccessToken(requestDto) }
-        assertEquals("RefreshToken has been expired.", exception.message!!)
+        val exception = shouldThrow<AuthenticateException> { authService.updateAccessToken(requestDto) }
+        exception.message shouldBe "RefreshToken has been expired."
     }
 }

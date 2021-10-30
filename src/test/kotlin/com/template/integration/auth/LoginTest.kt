@@ -5,7 +5,7 @@ import com.template.auth.dto.LoginRequestDto
 import com.template.integration.ApiIntegrationTest
 import com.template.util.EMAIL
 import com.template.util.PASSWORD
-import org.junit.jupiter.api.Assertions.assertEquals
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -49,8 +49,8 @@ class LoginTest : ApiIntegrationTest() {
         val accessToken = JsonPath.read<String>(result.response.contentAsString, "$.accessToken")
         val refreshToken = JsonPath.read<String>(result.response.contentAsString, "$.refreshToken")
 
-        assertEquals(userId, jwtTokenUtil.extractUserId(accessToken))
-        assertEquals(userId, jwtTokenUtil.extractUserId(refreshToken))
+        jwtTokenUtil.extractUserId(accessToken) shouldBe userId
+        jwtTokenUtil.extractUserId(refreshToken) shouldBe userId
     }
 
     @Test

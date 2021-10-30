@@ -5,7 +5,7 @@ import com.template.auth.dto.AccessTokenUpdateRequestDto
 import com.template.integration.ApiIntegrationTest
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.junit.jupiter.api.Assertions.assertFalse
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Value
@@ -43,7 +43,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
         }.andReturn()
 
         val accessToken = JsonPath.read<String>(result.response.contentAsString, "$.accessToken")
-        assertFalse(jwtTokenUtil.isTokenExpired(accessToken))
+        jwtTokenUtil.isTokenExpired(accessToken) shouldBe false
     }
 
     @DisplayName("실패 - 토큰이 잘못된 경우")
