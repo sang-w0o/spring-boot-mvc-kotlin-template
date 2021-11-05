@@ -13,11 +13,10 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.mockk.every
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.Mockito.`when`
 import java.util.*
 
 class JwtTokenUtilTest : BaseUnitTest() {
@@ -92,7 +91,7 @@ class JwtTokenUtilTest : BaseUnitTest() {
     @Test
     fun correctTokenVerifySuccess() {
         val user = getMockUser()
-        `when`(userRepository.findById(anyInt())).thenReturn(Optional.ofNullable(user))
+        every { userRepository.findById(any()) } returns Optional.of(user)
         val accessToken = jwtTokenUtil.generateAccessToken(user.id!!)
         val authentication = jwtTokenUtil.verify(accessToken)
         authentication.principal.shouldBeInstanceOf<UserDto>()
@@ -106,7 +105,7 @@ class JwtTokenUtilTest : BaseUnitTest() {
     @DisplayName("존재하지 않는 userId인 경우 검증 실패")
     @Test
     fun tokenWithInvalidUserId() {
-        `when`(userRepository.findById(anyInt())).thenReturn(Optional.empty())
+        every { userRepository.findById(any()) } returns Optional.empty()
         val accessToken = jwtTokenUtil.generateAccessToken(USER_ID)
         val exception = shouldThrow<AuthenticateException> { jwtTokenUtil.verify(accessToken) }
         exception.message shouldBe "Invalid userId."

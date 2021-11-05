@@ -1,5 +1,6 @@
 package com.template.unit
 
+import com.ninjasquad.springmockk.MockkBean
 import com.template.auth.tools.JwtProperties
 import com.template.user.domain.User
 import com.template.user.domain.UserRepository
@@ -9,7 +10,6 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.util.*
@@ -19,7 +19,7 @@ import java.util.*
 @ContextConfiguration(initializers = [ConfigDataApplicationContextInitializer::class])
 abstract class BaseUnitTest {
 
-    @MockBean
+    @MockkBean
     protected lateinit var userRepository: UserRepository
 
     protected var jwtProperties: JwtProperties = JwtProperties()
