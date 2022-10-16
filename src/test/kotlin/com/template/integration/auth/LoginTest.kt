@@ -1,7 +1,7 @@
 package com.template.integration.auth
 
 import com.jayway.jsonpath.JsonPath
-import com.template.auth.dto.LoginRequestDto
+import com.template.auth.controller.request.LoginRequest
 import com.template.integration.ApiIntegrationTest
 import com.template.util.EMAIL
 import com.template.util.PASSWORD
@@ -20,17 +20,10 @@ class LoginTest : ApiIntegrationTest() {
         const val WRONG_PASSWORD = "wrongPassword"
     }
 
-    private fun getLoginRequestDto(email: String, password: String): LoginRequestDto {
-        val requestDto = LoginRequestDto()
-        requestDto.email = email
-        requestDto.password = password
-        return requestDto
-    }
-
-    private fun apiCall(requestDto: LoginRequestDto): ResultActionsDsl {
+    private fun apiCall(request: LoginRequest): ResultActionsDsl {
         return mockMvc.post(URI.create("/v1/auth/login")) {
             contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(requestDto)
+            content = objectMapper.writeValueAsString(request)
         }
     }
 
@@ -38,9 +31,9 @@ class LoginTest : ApiIntegrationTest() {
     @DisplayName("로그인 성공")
     fun login_responseIsOkIfAllConditionsAreRight() {
         val userId = getUserId()
-        val requestDto = getLoginRequestDto(EMAIL, PASSWORD)
+        val request = LoginRequest(EMAIL, PASSWORD)
 
-        val result = apiCall(requestDto).andExpect {
+        val result = apiCall(request).andExpect {
             status { isOk() }
             jsonPath("accessToken") { exists() }
             jsonPath("refreshToken") { exists() }
@@ -56,9 +49,9 @@ class LoginTest : ApiIntegrationTest() {
     @Test
     @DisplayName("로그인 실패 - 없는 이메일")
     fun login_responseIsNotFoundIfEmailIsWrong() {
-        val requestDto = getLoginRequestDto(WRONG_EMAIL, PASSWORD)
+        val request = LoginRequest(WRONG_EMAIL, PASSWORD)
 
-        apiCall(requestDto).andExpect {
+        apiCall(request).andExpect {
             status { isNotFound() }
             assertErrorResponse(this, "이메일 또는 비밀번호가 잘못되었습니다.")
         }
@@ -67,8 +60,8 @@ class LoginTest : ApiIntegrationTest() {
     @Test
     @DisplayName("로그인 실패 - 비밀번호 오류")
     fun login_responseIsNotFoundIfPasswordIsWrong() {
-        val requestDto = getLoginRequestDto(EMAIL, WRONG_PASSWORD)
-        apiCall(requestDto).andExpect {
+        val request = LoginRequest(EMAIL, WRONG_PASSWORD)
+        apiCall(request).andExpect {
             status { isNotFound() }
             assertErrorResponse(this, "이메일 또는 비밀번호가 잘못되었습니다.")
         }
