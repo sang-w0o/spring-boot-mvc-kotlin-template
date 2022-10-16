@@ -1,6 +1,7 @@
 package com.template.user.controller
 
 import com.template.config.annotation.LoggedInUser
+import com.template.user.controller.response.UserInfoResponse
 import com.template.user.dto.UserDto
 import com.template.user.service.UserService
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,5 +15,5 @@ class UserApiController(
 ) {
 
     @GetMapping
-    fun getUserInfo(@LoggedInUser user: UserDto) = userService.getUserInfo(user)
+    fun getUserInfo(@LoggedInUser user: UserDto) = UserInfoResponse.from(userService.getUserInfo(user))
 }
