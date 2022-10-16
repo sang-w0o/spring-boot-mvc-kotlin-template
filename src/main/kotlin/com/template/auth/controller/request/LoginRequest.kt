@@ -13,4 +13,3 @@ data class LoginRequest(
     @field:Size(min = 5, max = 72)
     var password: String = ""
 )
-
