@@ -1,7 +1,6 @@
 package com.template.unit.auth
 
 import com.ninjasquad.springmockk.MockkBean
-import com.template.auth.dto.AccessTokenUpdateRequestDto
 import com.template.auth.exception.AuthenticateException
 import com.template.auth.service.AuthService
 import com.template.auth.tools.JwtTokenUtil
@@ -39,26 +38,26 @@ class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
     @Test
     fun updateAccessToken_Success() {
         every { userRepository.existsById(any()) } returns true
-        val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(USER_ID))
-        val result = authService.updateAccessToken(requestDto)
-        jwtTokenUtil.isTokenExpired(result.accessToken) shouldBe false
+        val refreshToken = jwtTokenUtil.generateRefreshToken(USER_ID)
+        val result = authService.updateAccessToken(refreshToken)
+        jwtTokenUtil.isTokenExpired(result) shouldBe false
     }
 
     @DisplayName("AccessToken 갱신 실패 - 잘못된 userId인 경우")
     @Test
     fun updateAccessToken_FailWrongUserId() {
         every { userRepository.existsById(any()) } returns false
-        val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(USER_ID))
-        val exception = assertThrows <AuthenticateException> { authService.updateAccessToken(requestDto) }
+        val refreshToken = jwtTokenUtil.generateRefreshToken(USER_ID)
+        val exception = assertThrows <AuthenticateException> { authService.updateAccessToken(refreshToken) }
         exception.message shouldBe "Unauthorized User Id."
     }
 
     @DisplayName("AccessToken 갱신 실패 - 만료된 refreshToken이 주어진 경우")
     @Test
     fun updateAccessToken_FailIfExpiredRefreshToken() {
-        val requestDto = AccessTokenUpdateRequestDto(jwtTokenUtil.generateRefreshToken(USER_ID))
+        val refreshToken = jwtTokenUtil.generateRefreshToken(USER_ID)
         every { jwtTokenUtil.isTokenExpired(any()) } returns true
-        val exception = shouldThrow<AuthenticateException> { authService.updateAccessToken(requestDto) }
+        val exception = shouldThrow<AuthenticateException> { authService.updateAccessToken(refreshToken) }
         exception.message shouldBe "RefreshToken has been expired."
     }
 }

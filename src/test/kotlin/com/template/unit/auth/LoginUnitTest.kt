@@ -2,7 +2,6 @@ package com.template.unit.auth
 
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.SpykBean
-import com.template.auth.dto.LoginRequestDto
 import com.template.auth.exception.LoginException
 import com.template.auth.service.AuthService
 import com.template.auth.tools.JwtTokenUtil
@@ -43,10 +42,9 @@ class LoginUnitTest : BaseUnitTest() {
         user.id = USER_ID
         every { userRepository.findByEmail(any()) } returns Optional.of(user)
         every { encoder.matches(any(), any()) } returns true
-        val requestDto = LoginRequestDto(EMAIL, PASSWORD)
-        val responseDto = authService.login(requestDto)
-        jwtTokenUtil.isTokenExpired(responseDto.accessToken) shouldBe false
-        jwtTokenUtil.isTokenExpired(responseDto.refreshToken) shouldBe false
+        val result = authService.login(EMAIL, PASSWORD)
+        jwtTokenUtil.isTokenExpired(result.first) shouldBe false
+        jwtTokenUtil.isTokenExpired(result.second) shouldBe false
     }
 
     @DisplayName("로그인 실패 - 비밀번호 불일치")
@@ -54,8 +52,7 @@ class LoginUnitTest : BaseUnitTest() {
     fun login_FailIfWrongPassword() {
         every { encoder.matches(any(), any()) } returns false
         every { userRepository.findByEmail(any()) } returns Optional.of(getMockUser())
-        val requestDto = LoginRequestDto(EMAIL, PASSWORD)
-        val exception = shouldThrow<LoginException> { authService.login(requestDto) }
+        val exception = shouldThrow<LoginException> { authService.login(EMAIL, PASSWORD) }
         exception.message shouldBe "이메일 또는 비밀번호가 잘못되었습니다."
     }
 
@@ -63,8 +60,7 @@ class LoginUnitTest : BaseUnitTest() {
     @Test
     fun login_FailIfWrongEmail() {
         every { userRepository.findByEmail(any()) } returns Optional.empty()
-        val requestDto = LoginRequestDto(EMAIL, PASSWORD)
-        val exception = shouldThrow<LoginException> { authService.login(requestDto) }
+        val exception = shouldThrow<LoginException> { authService.login(EMAIL, PASSWORD) }
         exception.message shouldBe "이메일 또는 비밀번호가 잘못되었습니다."
     }
 }

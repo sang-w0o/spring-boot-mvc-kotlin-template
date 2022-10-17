@@ -1,9 +1,5 @@
 package com.template.auth.service
 
-import com.template.auth.dto.AccessTokenUpdateRequestDto
-import com.template.auth.dto.AccessTokenUpdateResponseDto
-import com.template.auth.dto.LoginRequestDto
-import com.template.auth.dto.LoginResponseDto
 import com.template.auth.exception.AuthenticateException
 import com.template.auth.exception.LoginException
 import com.template.auth.tools.JwtTokenUtil
@@ -20,22 +16,21 @@ class AuthService(
 ) {
 
     @Transactional(readOnly = true)
-    fun updateAccessToken(dto: AccessTokenUpdateRequestDto): AccessTokenUpdateResponseDto {
-        if (!jwtTokenUtil.isTokenExpired(dto.refreshToken)) {
-            val userId = jwtTokenUtil.extractUserId(dto.refreshToken)
+    fun updateAccessToken(refreshToken: String): String {
+        if (!jwtTokenUtil.isTokenExpired(refreshToken)) {
+            val userId = jwtTokenUtil.extractUserId(refreshToken)
             if (userRepository.existsById(userId)) {
-                return AccessTokenUpdateResponseDto(jwtTokenUtil.generateAccessToken(userId))
+                return jwtTokenUtil.generateAccessToken(userId)
             } else throw AuthenticateException("Unauthorized User Id.")
         } else throw AuthenticateException("RefreshToken has been expired.")
     }
 
     @Transactional(readOnly = true)
-    fun login(requestDto: LoginRequestDto): LoginResponseDto {
-        val user = userRepository.findByEmail(requestDto.email).orElseThrow { LoginException() }
-        if (!encoder.matches(requestDto.password, user.password)) throw LoginException()
-        return LoginResponseDto(
-            accessToken = jwtTokenUtil.generateAccessToken(user.id!!),
-            refreshToken = jwtTokenUtil.generateAccessToken(user.id!!),
-        )
+    fun login(email: String, password: String): Pair<String, String> {
+        val user = userRepository.findByEmail(email).orElseThrow { LoginException() }
+        if (!encoder.matches(password, user.password)) throw LoginException()
+        val accessToken = jwtTokenUtil.generateAccessToken(user.id!!)
+        val refreshToken = jwtTokenUtil.generateAccessToken(user.id!!)
+        return Pair(accessToken, refreshToken)
     }
 }

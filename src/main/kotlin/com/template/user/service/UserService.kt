@@ -9,5 +9,5 @@ class UserService(
     private val userRepository: UserRepository
 ) {
 
-    fun getUserInfo(userDto: UserDto) = userDto.toResponseDto()
+    fun getUserInfo(userDto: UserDto) = userDto
 }

@@ -1,10 +1,10 @@
-package com.template.auth.dto
+package com.template.auth.controller.request
 
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 
-data class LoginRequestDto(
+data class LoginRequest(
     @field:Email
     @field:NotBlank(message = "Email is required.")
     var email: String = "",

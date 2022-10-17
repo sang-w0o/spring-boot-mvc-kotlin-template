@@ -9,6 +9,4 @@ data class UserDto(
     val email: String
 ) {
     constructor(user: User) : this(user.id!!, user.name, user.password!!, user.email)
-
-    fun toResponseDto() = UserInfoResponseDto(this.id, this.name, this.email)
 }
