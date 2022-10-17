@@ -1,7 +1,7 @@
 package com.template.config.handler
 
 import com.template.config.annotation.LoggedInUser
-import com.template.user.dto.UserDto
+import com.template.user.service.dto.UserDto
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component

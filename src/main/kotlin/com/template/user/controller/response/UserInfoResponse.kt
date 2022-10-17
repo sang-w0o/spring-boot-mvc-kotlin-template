@@ -1,6 +1,6 @@
 package com.template.user.controller.response
 
-import com.template.user.dto.UserDto
+import com.template.user.service.dto.UserDto
 
 data class UserInfoResponse(
     val id: Int,

@@ -3,7 +3,7 @@ package com.template.unit.auth
 import com.template.auth.exception.AuthenticateException
 import com.template.auth.tools.JwtTokenUtil
 import com.template.unit.BaseUnitTest
-import com.template.user.dto.UserDto
+import com.template.user.service.dto.UserDto
 import com.template.util.EXTRA_TIME
 import com.template.util.USER_ID
 import com.template.util.generateExpiredToken

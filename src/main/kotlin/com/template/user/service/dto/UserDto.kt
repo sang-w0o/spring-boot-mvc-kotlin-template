@@ -1,4 +1,4 @@
-package com.template.user.dto
+package com.template.user.service.dto
 
 import com.template.user.domain.User
 

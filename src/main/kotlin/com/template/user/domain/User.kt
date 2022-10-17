@@ -1,7 +1,7 @@
 package com.template.user.domain
 
 import com.template.domain.common.CreatedAtEntity
-import com.template.user.dto.UserDto
+import com.template.user.service.dto.UserDto
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
