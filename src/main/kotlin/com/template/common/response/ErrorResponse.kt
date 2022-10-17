@@ -1,9 +1,9 @@
-package com.template.common.dto
+package com.template.common.response
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
-data class ErrorResponseDto(
+data class ErrorResponse(
     @field:JsonFormat(
         shape = JsonFormat.Shape.STRING,
         pattern = "yyyy-MM-dd HH:mm:ss",

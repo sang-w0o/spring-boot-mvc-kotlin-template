@@ -3,7 +3,7 @@ package com.template.security.handler
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.template.common.dto.ErrorResponseDto
+import com.template.common.response.ErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.AuthenticationException
@@ -21,13 +21,13 @@ class JWTAuthenticationEntryPoint : AuthenticationEntryPoint {
         exception: AuthenticationException?
     ) {
         request!!
-        val errorResponseDto = ErrorResponseDto(
+        val errorResponse = ErrorResponse(
             LocalDateTime.now(), HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.reasonPhrase, exception?.message!!, request.requestURI, request.remoteAddr
         )
         response?.status = HttpStatus.UNAUTHORIZED.value()
         response?.contentType = MediaType.APPLICATION_JSON_VALUE
         response?.characterEncoding = "UTF-8"
-        response?.writer?.println(convertObjectToJson(errorResponseDto))
+        response?.writer?.println(convertObjectToJson(errorResponse))
     }
 
     private fun convertObjectToJson(obj: Any): String? {

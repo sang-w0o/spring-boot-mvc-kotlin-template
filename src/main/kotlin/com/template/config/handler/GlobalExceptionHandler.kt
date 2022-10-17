@@ -1,8 +1,8 @@
 package com.template.config.handler
 
 import com.template.auth.exception.AuthenticateException
-import com.template.common.dto.ErrorResponseDto
 import com.template.common.exception.ApiException
+import com.template.common.response.ErrorResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -38,8 +38,8 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         request: WebRequest
     ): ResponseEntity<Any> {
         val servletWebRequest = request as ServletWebRequest
-        val errorResponseDto = ErrorResponseDto(LocalDateTime.now(), status.value(), status.reasonPhrase, ex.bindingResult.fieldErrors[0].defaultMessage!!, servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
-        return ResponseEntity(errorResponseDto, headers, status)
+        val errorResponse = ErrorResponse(LocalDateTime.now(), status.value(), status.reasonPhrase, ex.bindingResult.fieldErrors[0].defaultMessage!!, servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
+        return ResponseEntity(errorResponse, headers, status)
     }
 
     override fun handleExceptionInternal(
@@ -49,13 +49,13 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         status: HttpStatus,
         request: WebRequest
     ): ResponseEntity<Any> {
-        val errorResponseDto: ErrorResponseDto
+        val errorResponse: ErrorResponse
         val servletWebRequest = request as ServletWebRequest
-        errorResponseDto = if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
-            ErrorResponseDto(LocalDateTime.now(), status.value(), status.reasonPhrase, "Internal Server Error", servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
+        errorResponse = if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
+            ErrorResponse(LocalDateTime.now(), status.value(), status.reasonPhrase, "Internal Server Error", servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
         } else {
-            ErrorResponseDto(LocalDateTime.now(), status.value(), status.reasonPhrase, ex.message!!, servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
+            ErrorResponse(LocalDateTime.now(), status.value(), status.reasonPhrase, ex.message!!, servletWebRequest.request.requestURI, servletWebRequest.request.remoteAddr)
         }
-        return ResponseEntity(errorResponseDto, headers, status)
+        return ResponseEntity(errorResponse, headers, status)
     }
 }
