@@ -1,3 +1,7 @@
 package com.template.user.service
 
-class UserQueryHandler
+import com.template.user.service.dto.UserDto
+
+interface UserQueryHandler {
+    fun getUserInfo(userDto: UserDto): UserDto
+}
