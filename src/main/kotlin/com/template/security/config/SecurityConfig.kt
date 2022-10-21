@@ -12,6 +12,8 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.config.web.servlet.invoke
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.firewall.HttpStatusRequestRejectedHandler
+import org.springframework.security.web.firewall.RequestRejectedHandler
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -64,5 +66,10 @@ class SecurityConfig(private val jwtTokenUtil: JwtTokenUtil, private val authent
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
+    }
+
+    @Bean
+    fun httpStatusRequestRejectedHandler(): RequestRejectedHandler {
+        return HttpStatusRequestRejectedHandler()
     }
 }
