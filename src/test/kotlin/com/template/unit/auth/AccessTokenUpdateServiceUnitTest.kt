@@ -2,7 +2,8 @@ package com.template.unit.auth
 
 import com.ninjasquad.springmockk.MockkBean
 import com.template.auth.exception.AuthenticateException
-import com.template.auth.service.AuthService
+import com.template.auth.service.AuthCommandHandler
+import com.template.auth.service.impl.AuthCommandHandlerImpl
 import com.template.auth.tools.JwtTokenUtil
 import com.template.unit.BaseUnitTest
 import com.template.util.TOKEN
@@ -18,7 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
 
-    private lateinit var authService: AuthService
+    private lateinit var authCommandHandler: AuthCommandHandler
 
     @MockkBean
     private lateinit var jwtTokenUtil: JwtTokenUtil
@@ -31,7 +32,7 @@ class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
         every { jwtTokenUtil.generateRefreshToken(any()) } returns TOKEN
         every { jwtTokenUtil.extractUserId(any()) } returns USER_ID
         every { jwtTokenUtil.isTokenExpired(any()) } returns false
-        authService = AuthService(jwtTokenUtil, userRepository, encoder)
+        authCommandHandler = AuthCommandHandlerImpl(jwtTokenUtil, userRepository, encoder)
     }
 
     @DisplayName("AccessToken 갱신 성공")
@@ -39,7 +40,7 @@ class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
     fun updateAccessToken_Success() {
         every { userRepository.existsById(any()) } returns true
         val refreshToken = jwtTokenUtil.generateRefreshToken(USER_ID)
-        val result = authService.updateAccessToken(refreshToken)
+        val result = authCommandHandler.updateAccessToken(refreshToken)
         jwtTokenUtil.isTokenExpired(result) shouldBe false
     }
 
@@ -48,7 +49,7 @@ class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
     fun updateAccessToken_FailWrongUserId() {
         every { userRepository.existsById(any()) } returns false
         val refreshToken = jwtTokenUtil.generateRefreshToken(USER_ID)
-        val exception = assertThrows <AuthenticateException> { authService.updateAccessToken(refreshToken) }
+        val exception = assertThrows <AuthenticateException> { authCommandHandler.updateAccessToken(refreshToken) }
         exception.message shouldBe "Unauthorized User Id."
     }
 
@@ -57,7 +58,7 @@ class AccessTokenUpdateServiceUnitTest : BaseUnitTest() {
     fun updateAccessToken_FailIfExpiredRefreshToken() {
         val refreshToken = jwtTokenUtil.generateRefreshToken(USER_ID)
         every { jwtTokenUtil.isTokenExpired(any()) } returns true
-        val exception = shouldThrow<AuthenticateException> { authService.updateAccessToken(refreshToken) }
+        val exception = shouldThrow<AuthenticateException> { authCommandHandler.updateAccessToken(refreshToken) }
         exception.message shouldBe "RefreshToken has been expired."
     }
 }

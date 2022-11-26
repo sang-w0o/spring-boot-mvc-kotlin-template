@@ -3,7 +3,8 @@ package com.template.unit.auth
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.SpykBean
 import com.template.auth.exception.LoginException
-import com.template.auth.service.AuthService
+import com.template.auth.service.AuthCommandHandler
+import com.template.auth.service.impl.AuthCommandHandlerImpl
 import com.template.auth.tools.JwtTokenUtil
 import com.template.unit.BaseUnitTest
 import com.template.user.domain.User
@@ -22,7 +23,7 @@ import java.util.Optional
 
 class LoginUnitTest : BaseUnitTest() {
 
-    private lateinit var authService: AuthService
+    private lateinit var authCommandHandler: AuthCommandHandler
 
     @MockkBean
     private lateinit var encoder: BCryptPasswordEncoder
@@ -32,7 +33,7 @@ class LoginUnitTest : BaseUnitTest() {
 
     @BeforeEach
     fun setUp() {
-        authService = AuthService(jwtTokenUtil, userRepository, encoder)
+        authCommandHandler = AuthCommandHandlerImpl(jwtTokenUtil, userRepository, encoder)
     }
 
     @DisplayName("로그인 성공")
@@ -42,7 +43,7 @@ class LoginUnitTest : BaseUnitTest() {
         user.id = USER_ID
         every { userRepository.findByEmail(any()) } returns Optional.of(user)
         every { encoder.matches(any(), any()) } returns true
-        val result = authService.login(EMAIL, PASSWORD)
+        val result = authCommandHandler.login(EMAIL, PASSWORD)
         jwtTokenUtil.isTokenExpired(result.first) shouldBe false
         jwtTokenUtil.isTokenExpired(result.second) shouldBe false
     }
@@ -52,7 +53,7 @@ class LoginUnitTest : BaseUnitTest() {
     fun login_FailIfWrongPassword() {
         every { encoder.matches(any(), any()) } returns false
         every { userRepository.findByEmail(any()) } returns Optional.of(getMockUser())
-        val exception = shouldThrow<LoginException> { authService.login(EMAIL, PASSWORD) }
+        val exception = shouldThrow<LoginException> { authCommandHandler.login(EMAIL, PASSWORD) }
         exception.message shouldBe "이메일 또는 비밀번호가 잘못되었습니다."
     }
 
@@ -60,7 +61,7 @@ class LoginUnitTest : BaseUnitTest() {
     @Test
     fun login_FailIfWrongEmail() {
         every { userRepository.findByEmail(any()) } returns Optional.empty()
-        val exception = shouldThrow<LoginException> { authService.login(EMAIL, PASSWORD) }
+        val exception = shouldThrow<LoginException> { authCommandHandler.login(EMAIL, PASSWORD) }
         exception.message shouldBe "이메일 또는 비밀번호가 잘못되었습니다."
     }
 }
