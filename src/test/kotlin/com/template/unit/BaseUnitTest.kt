@@ -41,7 +41,7 @@ abstract class BaseUnitTest {
             .setClaims(mutableMapOf())
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + EXTRA_TIME))
-            .signWith(SignatureAlgorithm.HS256, jwtProperties.secret)
+            .signWith(SignatureAlgorithm.HS256, jwtProperties.secret.toByteArray())
             .compact()
     }
 }
