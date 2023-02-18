@@ -36,7 +36,7 @@ class JwtTokenUtil(
 
     private fun extractAllClaims(token: String): Claims {
         try {
-            return Jwts.parser().setSigningKey(jwtProperties.secret).parseClaimsJws(token).body
+            return Jwts.parser().setSigningKey(jwtProperties.secret.toByteArray()).parseClaimsJws(token).body
         } catch (expiredJwtException: ExpiredJwtException) {
             throw AuthenticateException("Jwt 토큰이 만료되었습니다.")
         } catch (unsupportedJwtException: UnsupportedJwtException) {
@@ -55,7 +55,7 @@ class JwtTokenUtil(
             .setClaims(claims)
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + exp))
-            .signWith(SignatureAlgorithm.HS256, jwtProperties.secret)
+            .signWith(SignatureAlgorithm.HS256, jwtProperties.secret.toByteArray())
             .compact()
     }
 
