@@ -22,7 +22,7 @@ fun generateExpiredToken(exp: Int, secret: String): String {
         .setClaims(claims)
         .setIssuedAt(Date(System.currentTimeMillis() - realExp))
         .setExpiration(Date(System.currentTimeMillis() - EXTRA_TIME))
-        .signWith(SignatureAlgorithm.HS256, secret)
+        .signWith(SignatureAlgorithm.HS256, secret.toByteArray())
         .compact()
 }
 

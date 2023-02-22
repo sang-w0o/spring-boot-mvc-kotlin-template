@@ -81,7 +81,7 @@ class JwtTokenUtilTest : BaseUnitTest() {
             .setClaims(mutableMapOf())
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + EXTRA_TIME))
-            .signWith(SignatureAlgorithm.HS256, jwtProperties.secret)
+            .signWith(SignatureAlgorithm.HS256, jwtProperties.secret.toByteArray())
             .compact()
         val exception = shouldThrow<AuthenticateException> { jwtTokenUtil.extractUserId(wrongToken) }
         exception.message shouldBe "JWT Claim에 userId가 없습니다."

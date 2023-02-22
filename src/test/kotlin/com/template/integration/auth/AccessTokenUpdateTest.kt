@@ -84,7 +84,7 @@ class AccessTokenUpdateTest : ApiIntegrationTest() {
             .setClaims(claims)
             .setIssuedAt(Date(System.currentTimeMillis() - 86400000 * 8))
             .setExpiration(Date(System.currentTimeMillis() - 86400000 * 7))
-            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .signWith(SignatureAlgorithm.HS256, secretKey.toByteArray())
             .compact()
     }
 }
